@@ -62,3 +62,20 @@ win32 {
 message($${FFMPEG_HOME});
 }
 
+macx {
+    FFMPEGHOM_mac = /usr/local/Cellar/ffmpeg/4.4_1
+    INCLUDEPATH += $${FFMPEGHOM_mac}/include
+    LIBS += -L$${FFMPEGHOM_mac}/lib \
+            -lavcodec \
+            -lavdevice \
+            -lavfilter \
+            -lavformat \
+            -lavutil \
+            -lpostproc \
+            -lswscale \
+            -lswresample \
+            -lavresample
+
+message($${FFMPEGHOM_mac});
+}
+
