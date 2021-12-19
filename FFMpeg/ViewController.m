@@ -107,10 +107,8 @@ void showSpec(AVFormatContext *ctx) {
             return;
         }
         AVFormatContext *ctx = NULL;//avformat_alloc_context();
-        //int avformat_open_input(AVFormatContext **ps, const char *url, ff_const59 AVInputFormat *fmt, AVDictionary **options);
-    //    AVDictionary *options = nil;
+//        AVDictionary *options = nil;
     //    av_dict_set(&options, "framerate", "30", 0);
-    //    av_dict_set(&options, "video_size", "1280x720", 0);
         int ret = avformat_open_input(&ctx,":1",inFmt,NULL);
         if (ret < 0) {
             char errbuf[1024];
@@ -145,28 +143,31 @@ void showSpec(AVFormatContext *ctx) {
         AVPacket *pkt = av_packet_alloc();
         pkt->data = NULL;
         pkt->size = 0;
-        
-//        FILE *output_fd = fopen([filePath cStringUsingEncoding:NSUTF8StringEncoding], "wb+");
-//        assert(output_fd);
-//
-//        while (!_stop) {
-//            ret = av_read_frame(ctx, pkt);
-//            if (ret < 0) {
-//                if (ret == -35) {
-//                    continue;
-//                }
-//
-//                break;
-//            }
-//            fwrite(pkt->data, pkt->size, 1, output_fd);
-//            fflush(output_fd);
-//            av_packet_unref(pkt);
-//        }
-//
-//        av_packet_free(&pkt);
-//        avformat_close_input(&ctx);
-       
+        /*
+        //C方式写入数据
+        FILE *output_fd = fopen("/Users/dalong/Desktop/out_code.pcm", "wb+");
+        assert(output_fd);
+
         while (!_stop) {
+            ret = av_read_frame(ctx, pkt);
+            if (ret < 0) {
+                if (ret == -35) {
+                    continue;
+                }
+
+                break;
+            }
+            fwrite(pkt->data, pkt->size, 1, output_fd);
+            fflush(output_fd);
+            av_packet_unref(pkt);
+        }
+
+        av_packet_free(&pkt);
+        avformat_close_input(&ctx);
+         */
+        
+        //ffplay -ar 44100 -ac 2 -f f32le out_code.pcm
+        while (!self.stop) {
             int ret = av_read_frame(ctx, pkt);
 
             if (ret == 0) {
@@ -179,6 +180,8 @@ void showSpec(AVFormatContext *ctx) {
                     [fileHandle writeData:[NSData dataWithBytes:pkt->data length:pkt->size] error:&writeError];
                     if (writeError) {
                         NSLog(@"writeData:error:%@",writeError);
+                    } else {
+                        NSLog(@"写入文件成功 数据长度%d",pkt->size);
                     }
                 } else {
                     NSLog(@"seekToEndReturningOffset %@",error);
