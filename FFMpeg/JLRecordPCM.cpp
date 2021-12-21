@@ -56,14 +56,13 @@ void JLRecordPCM::beginRecord()
             if (ret == -35) {
                 continue;
             }
-
             break;
         }
         fwrite(pkt->data, pkt->size, 1, output_fd);
         fflush(output_fd);
         av_packet_unref(pkt);
     }
-
+    fclose(output_fd);
     av_packet_free(&pkt);
     avformat_close_input(&ctx);
     cout << "录音结束" << endl;

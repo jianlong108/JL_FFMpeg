@@ -68,9 +68,6 @@ void pull_audio_data(void *userdata, Uint8 *stream, int len) {
 
 void JLPlayPCM::beginPlay()
 {
-    SDL_version v;
-    SDL_VERSION(&v);
-    cout << "SDL_version:" << v.major << v.minor << v.patch << endl;
 //    return;
     // 初始化Audio子系统
     if (SDL_Init(SDL_INIT_AUDIO)) {
@@ -83,7 +80,7 @@ void JLPlayPCM::beginPlay()
     SDL_AudioSpec spec;
     // 采样率
     spec.freq = SAMPLE_RATE;
-    // 采样格式（s16le）
+    // 采样格式
     spec.format = SAMPLE_FORMAT;
     // 声道数
     spec.channels = CHANNELS;
@@ -93,6 +90,9 @@ void JLPlayPCM::beginPlay()
     spec.callback = pull_audio_data;
     // 传递给回调的参数
     AudioBuffer buffer;
+    buffer.len = 0;
+    buffer.pullLen = 0;
+    buffer.data = nullptr;
     spec.userdata = &buffer;
 
     // 打开音频设备
@@ -103,7 +103,8 @@ void JLPlayPCM::beginPlay()
         SDL_Quit();
         return;
     }
-    FILE *output_fd = fopen("/Users/dalong/Desktop/out_code.pcm", "rb+");
+    
+    FILE *output_fd = fopen("/Users/dalong/Desktop/jl_2021-12-21_23-10-37.pcm", "rb+");
     if (!output_fd) {
         cout  << "文件打开失败 " << endl;
         // 关闭音频设备

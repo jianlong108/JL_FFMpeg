@@ -6,23 +6,11 @@
 //
 
 #import "ViewController.h"
-//#include <libavutil/avutil.h>
-//#include <libavdevice/avdevice.h>
-//#include <libavformat/avformat.h>
-//#include <libavcodec/avcodec.h>
-//#include <libavresample/avresample.h>
 
 #import "JLRecordPCM.hpp"
 #import "JLPlayPCM.hpp"
 
 //#import <AVFoundation/AVFoundation.h>
-
-// play pcm
-#include <SDL2/SDL.h>
-//#include <iostream>
-
-//using namespace std;
-
 
 
 @interface ViewController ()

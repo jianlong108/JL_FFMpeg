@@ -7,6 +7,7 @@
 
 #import "AppDelegate.h"
 #include <libavdevice/avdevice.h>
+#include <SDL2/SDL.h>
 
 @interface AppDelegate ()
 
@@ -21,7 +22,9 @@
     //注册设备 仅执行一次即可
     avdevice_register_all();
     
-    
+    SDL_version v;
+    SDL_VERSION(&v);
+    NSLog(@"SDL_version:%d.%d.%d",v.major,v.minor,v.patch);
 //    NSString *urlString = @"x-apple.systempreferences:com.apple.preference.security?Privacy_Assistive";
 //        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:urlString]];
 }
