@@ -9,6 +9,7 @@
 
 #import "JLRecordPCM.hpp"
 #import "JLPlayPCM.hpp"
+#import "JLPCMToWAV.hpp"
 
 //#import <AVFoundation/AVFoundation.h>
 
@@ -58,7 +59,12 @@
     
     _beiginRecordSwitch.state = NSControlStateValueOn;
     
-
+    // 封装WAV的头部
+    WAVHeader header;
+    header.numChannels = 2;
+    header.sampleRate = 44100;
+    header.bitsPerSample = 32;
+    JLPCMToWAV::pcm2wav(header, "/Users/dalong/Desktop/jl_2021-12-21_23-10-37.pcm", "/Users/dalong/Desktop/jl_2021-12-21_23-10-37.wav");
     
 //    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
 //

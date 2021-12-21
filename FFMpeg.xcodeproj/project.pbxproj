@@ -14,6 +14,7 @@
 		F4B9F572276F0D2600F631A4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F4B9F571276F0D2600F631A4 /* main.m */; };
 		F4B9F5CC2770E42400F631A4 /* JLRecordPCM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4B9F5CA2770E42400F631A4 /* JLRecordPCM.cpp */; };
 		F4B9F5D42770E88A00F631A4 /* JLPlayPCM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4B9F5D22770E88A00F631A4 /* JLPlayPCM.cpp */; };
+		F4B9F5DA2772279A00F631A4 /* JLPCMToWAV.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4B9F5D82772279A00F631A4 /* JLPCMToWAV.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,8 @@
 		F4B9F5CB2770E42400F631A4 /* JLRecordPCM.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = JLRecordPCM.hpp; sourceTree = "<group>"; };
 		F4B9F5D22770E88A00F631A4 /* JLPlayPCM.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = JLPlayPCM.cpp; sourceTree = "<group>"; };
 		F4B9F5D32770E88A00F631A4 /* JLPlayPCM.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = JLPlayPCM.hpp; sourceTree = "<group>"; };
+		F4B9F5D82772279A00F631A4 /* JLPCMToWAV.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = JLPCMToWAV.cpp; sourceTree = "<group>"; };
+		F4B9F5D92772279A00F631A4 /* JLPCMToWAV.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = JLPCMToWAV.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +76,8 @@
 				F4B9F5CB2770E42400F631A4 /* JLRecordPCM.hpp */,
 				F4B9F5D22770E88A00F631A4 /* JLPlayPCM.cpp */,
 				F4B9F5D32770E88A00F631A4 /* JLPlayPCM.hpp */,
+				F4B9F5D82772279A00F631A4 /* JLPCMToWAV.cpp */,
+				F4B9F5D92772279A00F631A4 /* JLPCMToWAV.hpp */,
 				F4B9F56B276F0D2600F631A4 /* Assets.xcassets */,
 				F4B9F56D276F0D2600F631A4 /* Main.storyboard */,
 				F4B9F570276F0D2600F631A4 /* Info.plist */,
@@ -151,6 +156,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4B9F56A276F0D2400F631A4 /* ViewController.mm in Sources */,
+				F4B9F5DA2772279A00F631A4 /* JLPCMToWAV.cpp in Sources */,
 				F4B9F5CC2770E42400F631A4 /* JLRecordPCM.cpp in Sources */,
 				F4B9F572276F0D2600F631A4 /* main.m in Sources */,
 				F4B9F567276F0D2400F631A4 /* AppDelegate.m in Sources */,

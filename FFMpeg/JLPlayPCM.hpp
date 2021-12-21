@@ -9,9 +9,11 @@
 #define PlayPCM_hpp
 
 #include <stdio.h>
+
 class JLPlayPCM {
 public:
     bool stopPlay;
     void beginPlay();
 };
+
 #endif /* PlayPCM_hpp */
