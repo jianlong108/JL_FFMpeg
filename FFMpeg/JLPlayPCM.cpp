@@ -36,9 +36,9 @@ using namespace::std;
 
 // 用于存储读取的音频数据和长度
 typedef struct {
-    int len;
-    int pullLen;
-    Uint8 *data;
+    int len = 0;
+    int pullLen = 0;
+    Uint8 *data = nullptr;
 } AudioBuffer;
 
 
@@ -90,9 +90,6 @@ void JLPlayPCM::beginPlay()
     spec.callback = pull_audio_data;
     // 传递给回调的参数
     AudioBuffer buffer;
-    buffer.len = 0;
-    buffer.pullLen = 0;
-    buffer.data = nullptr;
     spec.userdata = &buffer;
 
     // 打开音频设备
