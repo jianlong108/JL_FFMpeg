@@ -10,6 +10,7 @@
 #import "JLRecordPCM.hpp"
 #import "JLPlayPCM.hpp"
 #import "JLPCMToWAV.hpp"
+#import "JLPlayWAV.hpp"
 
 //#import <AVFoundation/AVFoundation.h>
 
@@ -17,7 +18,8 @@
 @interface ViewController ()
 {
     JLRecordPCM *recordObj;
-    JLPlayPCM *playObj;
+    JLPlayPCM *playPCMObj;
+    JLPlayWAV *playWAVObj;
 }
 
 @property(nonatomic, strong) NSSwitch *beiginRecordSwitch;
@@ -33,34 +35,44 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    NSButton *beiginRecordBtn = [NSButton buttonWithTitle:@"开始录音" target:self action:@selector(beginRecord:)];
-    beiginRecordBtn.frame = CGRectMake(0, 0, 88, 44);
+    NSButton *beiginRecordBtn = [NSButton buttonWithTitle:@"开始录音pcm" target:self action:@selector(beginRecord:)];
+    beiginRecordBtn.frame = CGRectMake(0, 0, 188, 44);
     [self.view addSubview:beiginRecordBtn];
     
     
-    NSButton *endRecordBtn = [NSButton buttonWithTitle:@"停止录音" target:self action:@selector(endRecord:)];
-    endRecordBtn.frame = CGRectMake(100, 0, 88, 44);
+    NSButton *endRecordBtn = [NSButton buttonWithTitle:@"停止录音pcm" target:self action:@selector(endRecord:)];
+    endRecordBtn.frame = CGRectMake(200, 0, 188, 44);
     [self.view addSubview:endRecordBtn];
     
-    NSButton *beiginPlayBtn = [NSButton buttonWithTitle:@"开始播放" target:self action:@selector(beginPlay:)];
-    beiginPlayBtn.frame = CGRectMake(0, 50, 88, 44);
+    NSButton *beiginPlayBtn = [NSButton buttonWithTitle:@"开始播放pcm" target:self action:@selector(beginPlay:)];
+    beiginPlayBtn.frame = CGRectMake(0, 50, 188, 44);
     [self.view addSubview:beiginPlayBtn];
     
     
-    NSButton *endPlayBtn = [NSButton buttonWithTitle:@"停止播放" target:self action:@selector(endPlay:)];
-    endPlayBtn.frame = CGRectMake(100, 50, 88, 44);
+    NSButton *endPlayBtn = [NSButton buttonWithTitle:@"停止播放pcm" target:self action:@selector(endPlay:)];
+    endPlayBtn.frame = CGRectMake(200, 50, 188, 44);
     [self.view addSubview:endPlayBtn];
     
     
+    NSButton *beiginPlayWAVBtn = [NSButton buttonWithTitle:@"开始播放wav" target:self action:@selector(beginPlayWAV:)];
+    beiginPlayWAVBtn.frame = CGRectMake(0, 150, 188, 44);
+    [self.view addSubview:beiginPlayWAVBtn];
+    
+    
+    NSButton *endPlayWAVBtn = [NSButton buttonWithTitle:@"停止播放wav" target:self action:@selector(endPlayWAV:)];
+    endPlayWAVBtn.frame = CGRectMake(200, 150, 188, 44);
+    [self.view addSubview:endPlayWAVBtn];
+    
+    
     _beiginRecordSwitch = [[NSSwitch alloc] init];
-    _beiginRecordSwitch.frame = CGRectMake(200, 0, 88, 44);
+    _beiginRecordSwitch.frame = CGRectMake(200, 0, 188, 44);
     [self.view addSubview:_beiginRecordSwitch];
     
     
     _beiginRecordSwitch.state = NSControlStateValueOn;
     
-    NSButton *pcmToWAVBtn = [NSButton buttonWithTitle:@"开始转换" target:self action:@selector(beginConvert:)];
-    pcmToWAVBtn.frame = CGRectMake(0, 100, 88, 44);
+    NSButton *pcmToWAVBtn = [NSButton buttonWithTitle:@"开始转换pcm2wav" target:self action:@selector(beginConvert:)];
+    pcmToWAVBtn.frame = CGRectMake(0, 100, 188, 44);
     [self.view addSubview:pcmToWAVBtn];
     
     
@@ -86,11 +98,15 @@
 - (void)beginPlay:(id)sender
 {
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        self->playObj = new JLPlayPCM;
-        self->playObj->beginPlay();
+        self->playPCMObj = new JLPlayPCM;
+        self->playPCMObj->beginPlay();
     });
 }
-- (void)endPlay:(id)sender{}
+
+- (void)endPlay:(id)sender
+{
+    self->playPCMObj->stopPlay = true;
+}
 
 
 - (void)beginConvert:(id)sender
@@ -100,7 +116,21 @@
     header.numChannels = 2;
     header.sampleRate = 44100;
     header.bitsPerSample = 32;
-    JLPCMToWAV::pcm2wav(header, "/Users/dalong/Desktop/AV/3.pcm", "/Users/dalong/Desktop/AV/3.wav");
+    JLPCMToWAV::pcm2wav(header, "/Users/dalong/Desktop/AV/3.pcm", "/Users/dalong/Desktop/AV/7.wav");
+}
+
+- (void)beginPlayWAV:(id)sender
+{
+    
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        self->playWAVObj = new JLPlayWAV;
+        self->playWAVObj->beginPlay();
+    });
+}
+
+- (void)endPlayWAV:(id)sender
+{
+    self->playWAVObj->stopPlay = true;
 }
 
 @end

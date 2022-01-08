@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F442354B2778076800F8B730 /* JLResample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F44235492778076800F8B730 /* JLResample.cpp */; };
+		F44235512789812400F8B730 /* JLPlayWAV.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F442354F2789812400F8B730 /* JLPlayWAV.cpp */; };
 		F4B9F567276F0D2400F631A4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F4B9F566276F0D2400F631A4 /* AppDelegate.m */; };
 		F4B9F56A276F0D2400F631A4 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = F4B9F569276F0D2400F631A4 /* ViewController.mm */; };
 		F4B9F56C276F0D2600F631A4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4B9F56B276F0D2600F631A4 /* Assets.xcassets */; };
@@ -21,6 +22,8 @@
 /* Begin PBXFileReference section */
 		F44235492778076800F8B730 /* JLResample.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = JLResample.cpp; sourceTree = "<group>"; };
 		F442354A2778076800F8B730 /* JLResample.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = JLResample.hpp; sourceTree = "<group>"; };
+		F442354F2789812400F8B730 /* JLPlayWAV.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = JLPlayWAV.cpp; sourceTree = "<group>"; };
+		F44235502789812400F8B730 /* JLPlayWAV.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = JLPlayWAV.hpp; sourceTree = "<group>"; };
 		F4B9F562276F0D2400F631A4 /* FFMpeg.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FFMpeg.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4B9F565276F0D2400F631A4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		F4B9F566276F0D2400F631A4 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -81,6 +84,8 @@
 				F4B9F5D32770E88A00F631A4 /* JLPlayPCM.hpp */,
 				F4B9F5D82772279A00F631A4 /* JLPCMToWAV.cpp */,
 				F4B9F5D92772279A00F631A4 /* JLPCMToWAV.hpp */,
+				F442354F2789812400F8B730 /* JLPlayWAV.cpp */,
+				F44235502789812400F8B730 /* JLPlayWAV.hpp */,
 				F44235492778076800F8B730 /* JLResample.cpp */,
 				F442354A2778076800F8B730 /* JLResample.hpp */,
 				F4B9F56B276F0D2600F631A4 /* Assets.xcassets */,
@@ -160,6 +165,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F44235512789812400F8B730 /* JLPlayWAV.cpp in Sources */,
 				F4B9F56A276F0D2400F631A4 /* ViewController.mm in Sources */,
 				F4B9F5DA2772279A00F631A4 /* JLPCMToWAV.cpp in Sources */,
 				F4B9F5CC2770E42400F631A4 /* JLRecordPCM.cpp in Sources */,

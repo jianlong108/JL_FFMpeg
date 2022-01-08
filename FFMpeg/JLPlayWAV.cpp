@@ -1,11 +1,11 @@
 //
-//  PlayPCM.cpp
+//  JLPlayWAV.cpp
 //  FFMpeg
 //
-//  Created by Wangjianlong on 2021/12/21.
+//  Created by Wangjianlong on 2022/1/8.
 //
 
-#include "JLPlayPCM.hpp"
+#include "JLPlayWAV.hpp"
 #include <iostream>
 
 
@@ -66,7 +66,7 @@ static void pull_audio_data(void *userdata, Uint8 *stream, int len) {
 }
 
 
-void JLPlayPCM::beginPlay()
+void JLPlayWAV::beginPlay()
 {
     // 初始化Audio子系统
     if (SDL_Init(SDL_INIT_AUDIO)) {
@@ -77,66 +77,57 @@ void JLPlayPCM::beginPlay()
     
     // 音频参数
     SDL_AudioSpec spec;
-    // 采样率
-    spec.freq = SAMPLE_RATE;
-    // 采样格式
-    spec.format = SAMPLE_FORMAT;
-    // 声道数
-    spec.channels = CHANNELS;
-    // 音频缓冲区的样本数量（这个值必须是2的幂）
-    spec.samples = SAMPLES;
+
+    // WAV中的PCM数据
+    Uint8 *data;
+    // WAV中的PCM数据大小（字节）
+    Uint32 len;
+    // 加载wav文件
+    if (!SDL_LoadWAV("/Users/dalong/Desktop/AV/7.wav", &spec, &data, &len)) {
+        cout << "SDL_LoadWAV error:" << SDL_GetError();
+        // 清除所有的子系统
+        SDL_Quit();
+        return;
+    }
     // 回调
     spec.callback = pull_audio_data;
-    // 传递给回调的参数
+    // 传递给回调函数的userdata
     AudioBuffer buffer;
+    buffer.len = len;
+    buffer.data = data;
     spec.userdata = &buffer;
+    
+    // 打开设备
+    if (SDL_OpenAudio(&spec, nullptr)) {
+        cout << "SDL_OpenAudio error:" << SDL_GetError();
+        // 释放文件数据
+        SDL_FreeWAV(data);
+        // 清除所有的子系统
+        SDL_Quit();
+        return;
+    }
 
-    // 打开音频设备
-    if (SDL_OpenAudio(&spec, NULL)) {
-        
-        cout <<  "SDL_OpenAudio Error " << SDL_GetError() << endl;
-        // 清除所有初始化的子系统
-        SDL_Quit();
-        return;
-    }
-    
-    FILE *output_fd = fopen("/Users/dalong/Desktop/AV/3.pcm", "rb+");
-    if (!output_fd) {
-        cout  << "文件打开失败 " << endl;
-        // 关闭音频设备
-        SDL_CloseAudio();
-        // 清除所有初始化的子系统
-        SDL_Quit();
-        return;
-    }
-    
-    // 开始播放
+    // 开始播放（0是取消暂停）
     SDL_PauseAudio(0);
 
-    // 存放文件数据
-    Uint8 data[BUFFER_SIZE];
-
     while (!this->stopPlay) {
-        // 只要从文件中读取的音频数据，还没有填充完毕，就跳过
         if (buffer.len > 0) continue;
-        buffer.len = (int)fread(data, 1, BUFFER_SIZE, output_fd);
-        
-        // 文件数据已经读取完毕
-        if (buffer.len <= 0) {
-            // 剩余的样本数量
-            int samples = buffer.pullLen / BYTES_PER_SAMPLE;
-            int ms = samples * 1000 / SAMPLE_RATE;
-            SDL_Delay(ms);
-            break;
-        }
-
-        // 读取到了文件数据
-        buffer.data = data;
+        // 每一个样本的大小
+        int size = spec.channels * SDL_AUDIO_BITSIZE(spec.format) / 8;
+        // 最后一次播放的样本数量
+        int samples = buffer.pullLen / size;
+        // 最后一次播放的时长
+        int ms = samples * 1000 / spec.freq;
+        SDL_Delay(ms);
+        break;
     }
-    // 关闭文件
-    fclose(output_fd);
-    // 关闭音频设备
+    
+    // 释放WAV文件数据
+    SDL_FreeWAV(data);
+
+    // 关闭设备
     SDL_CloseAudio();
-    // 清理所有初始化的子系统
+
+    // 清除所有的子系统
     SDL_Quit();
 }
