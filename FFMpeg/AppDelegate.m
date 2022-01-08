@@ -29,10 +29,4 @@
 //        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:urlString]];
 }
 
-
-- (void)applicationWillTerminate:(NSNotification *)aNotification {
-    // Insert code here to tear down your application
-}
-
-
 @end

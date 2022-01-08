@@ -43,7 +43,7 @@ void JLRecordPCM::beginRecord()
     char chCurrentTime[128];
     strftime(chCurrentTime, sizeof(chCurrentTime), "%Y-%m-%d_%H-%M-%S", std::localtime(&currentTime)); //年月日 时分秒
     string stCurrentTime = chCurrentTime;// 转为string
-    string fileName = "/Users/dalong/Desktop/jl_" + stCurrentTime + ".pcm";// 示例
+    string fileName = "/Users/dalong/Desktop/AV/jl_" + stCurrentTime + ".pcm";// 示例
     FILE *output_fd = fopen(fileName.c_str(), "wb+");
     assert(output_fd);
     // 数据包

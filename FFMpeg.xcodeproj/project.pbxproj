@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F442354B2778076800F8B730 /* JLResample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F44235492778076800F8B730 /* JLResample.cpp */; };
 		F4B9F567276F0D2400F631A4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F4B9F566276F0D2400F631A4 /* AppDelegate.m */; };
 		F4B9F56A276F0D2400F631A4 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = F4B9F569276F0D2400F631A4 /* ViewController.mm */; };
 		F4B9F56C276F0D2600F631A4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4B9F56B276F0D2600F631A4 /* Assets.xcassets */; };
@@ -18,6 +19,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F44235492778076800F8B730 /* JLResample.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = JLResample.cpp; sourceTree = "<group>"; };
+		F442354A2778076800F8B730 /* JLResample.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = JLResample.hpp; sourceTree = "<group>"; };
 		F4B9F562276F0D2400F631A4 /* FFMpeg.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FFMpeg.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4B9F565276F0D2400F631A4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		F4B9F566276F0D2400F631A4 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -78,6 +81,8 @@
 				F4B9F5D32770E88A00F631A4 /* JLPlayPCM.hpp */,
 				F4B9F5D82772279A00F631A4 /* JLPCMToWAV.cpp */,
 				F4B9F5D92772279A00F631A4 /* JLPCMToWAV.hpp */,
+				F44235492778076800F8B730 /* JLResample.cpp */,
+				F442354A2778076800F8B730 /* JLResample.hpp */,
 				F4B9F56B276F0D2600F631A4 /* Assets.xcassets */,
 				F4B9F56D276F0D2600F631A4 /* Main.storyboard */,
 				F4B9F570276F0D2600F631A4 /* Info.plist */,
@@ -160,6 +165,7 @@
 				F4B9F5CC2770E42400F631A4 /* JLRecordPCM.cpp in Sources */,
 				F4B9F572276F0D2600F631A4 /* main.m in Sources */,
 				F4B9F567276F0D2400F631A4 /* AppDelegate.m in Sources */,
+				F442354B2778076800F8B730 /* JLResample.cpp in Sources */,
 				F4B9F5D42770E88A00F631A4 /* JLPlayPCM.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

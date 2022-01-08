@@ -68,7 +68,6 @@ void pull_audio_data(void *userdata, Uint8 *stream, int len) {
 
 void JLPlayPCM::beginPlay()
 {
-//    return;
     // 初始化Audio子系统
     if (SDL_Init(SDL_INIT_AUDIO)) {
         // 返回值不是0，就代表失败
@@ -101,7 +100,7 @@ void JLPlayPCM::beginPlay()
         return;
     }
     
-    FILE *output_fd = fopen("/Users/dalong/Desktop/jl_2021-12-21_23-10-37.pcm", "rb+");
+    FILE *output_fd = fopen("/Users/dalong/Desktop/AV/3.pcm", "rb+");
     if (!output_fd) {
         cout  << "文件打开失败 " << endl;
         // 关闭音频设备

@@ -34,42 +34,36 @@
     [super viewDidLoad];
     
     NSButton *beiginRecordBtn = [NSButton buttonWithTitle:@"开始录音" target:self action:@selector(beginRecord:)];
-    beiginRecordBtn.frame = CGRectMake(0, 0, 100, 44);
+    beiginRecordBtn.frame = CGRectMake(0, 0, 88, 44);
     [self.view addSubview:beiginRecordBtn];
     
     
     NSButton *endRecordBtn = [NSButton buttonWithTitle:@"停止录音" target:self action:@selector(endRecord:)];
-    endRecordBtn.frame = CGRectMake(0, 100, 100, 44);
+    endRecordBtn.frame = CGRectMake(100, 0, 88, 44);
     [self.view addSubview:endRecordBtn];
     
     NSButton *beiginPlayBtn = [NSButton buttonWithTitle:@"开始播放" target:self action:@selector(beginPlay:)];
-    beiginPlayBtn.frame = CGRectMake(0, 200, 100, 44);
+    beiginPlayBtn.frame = CGRectMake(0, 50, 88, 44);
     [self.view addSubview:beiginPlayBtn];
     
     
     NSButton *endPlayBtn = [NSButton buttonWithTitle:@"停止播放" target:self action:@selector(endPlay:)];
-    endPlayBtn.frame = CGRectMake(0, 300, 100, 44);
+    endPlayBtn.frame = CGRectMake(100, 50, 88, 44);
     [self.view addSubview:endPlayBtn];
     
     
     _beiginRecordSwitch = [[NSSwitch alloc] init];
-    _beiginRecordSwitch.frame = CGRectMake(150, 0, 100, 44);
+    _beiginRecordSwitch.frame = CGRectMake(200, 0, 88, 44);
     [self.view addSubview:_beiginRecordSwitch];
     
     
     _beiginRecordSwitch.state = NSControlStateValueOn;
     
-    // 封装WAV的头部
-    WAVHeader header;
-    header.numChannels = 2;
-    header.sampleRate = 44100;
-    header.bitsPerSample = 32;
-    JLPCMToWAV::pcm2wav(header, "/Users/dalong/Desktop/jl_2021-12-21_23-10-37.pcm", "/Users/dalong/Desktop/jl_2021-12-21_23-10-37.wav");
+    NSButton *pcmToWAVBtn = [NSButton buttonWithTitle:@"开始转换" target:self action:@selector(beginConvert:)];
+    pcmToWAVBtn.frame = CGRectMake(0, 100, 88, 44);
+    [self.view addSubview:pcmToWAVBtn];
     
-//    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
-//
-//    }];
-//    [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
+    
 }
 
 - (void)endRecord:(id)sender
@@ -99,11 +93,14 @@
 - (void)endPlay:(id)sender{}
 
 
-- (void)setRepresentedObject:(id)representedObject {
-    [super setRepresentedObject:representedObject];
-
-    // Update the view, if already loaded.
+- (void)beginConvert:(id)sender
+{
+    // 封装WAV的头部
+    WAVHeader header;
+    header.numChannels = 2;
+    header.sampleRate = 44100;
+    header.bitsPerSample = 32;
+    JLPCMToWAV::pcm2wav(header, "/Users/dalong/Desktop/AV/3.pcm", "/Users/dalong/Desktop/AV/3.wav");
 }
-
 
 @end

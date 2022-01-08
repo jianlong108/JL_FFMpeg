@@ -26,10 +26,11 @@ void JLPCMToWAV::pcm2wav(WAVHeader &header,
     }
     
     fseek(pcmFile, 0, SEEK_END);
+    //获取文件大小
     size_t size = ftell(pcmFile);
     //seek到文件头
     fseek(pcmFile, 0, SEEK_SET);
-    header.dataChunkDataSize = size;
+    header.dataChunkDataSize = (uint8_t)size;
     header.riffChunkDataSize = header.dataChunkDataSize
                                    + sizeof (WAVHeader) - 8;
 
