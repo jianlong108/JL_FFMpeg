@@ -12,6 +12,7 @@
 #import "JLPCMToWAV.hpp"
 #import "JLPlayWAV.hpp"
 #import "JLAudioResample.hpp"
+#import "JLAACACodec.hpp"
 
 
 @interface ViewController ()
@@ -78,6 +79,11 @@
     NSButton *audioResampleBtn = [NSButton buttonWithTitle:@"音频重采样" target:self action:@selector(audioResample:)];
     audioResampleBtn.frame = CGRectMake(200, 100, 188, 44);
     [self.view addSubview:audioResampleBtn];
+    
+    
+    NSButton *aacEncodeBtn = [NSButton buttonWithTitle:@"aac编码" target:self action:@selector(aacEncode:)];
+    aacEncodeBtn.frame = CGRectMake(0, 200, 188, 44);
+    [self.view addSubview:aacEncodeBtn];
 }
 
 - (void)endRecord:(id)sender
@@ -139,5 +145,17 @@
 {
     JLAudioResample::resampleAudio("/Users/dalong/Desktop/AV/44100_s16le_2.pcm", 44100, AV_SAMPLE_FMT_S16, 2, "/Users/dalong/Desktop/AV/48000_f32le_2.pcm", 48000, AV_SAMPLE_FMT_FLT, 2);
 }
+
+- (void)aacEncode:(id)sender
+{
+    AudioEncodeSpec spec = {
+        "/Users/dalong/Desktop/AV/44100_s16le_2.pcm",
+        44100,
+        AV_SAMPLE_FMT_S16,
+        AV_CH_LAYOUT_STEREO
+    };
+    JLAACCodec::aacEncode(spec, "/Users/dalong/Desktop/AV/aacCode.aac");
+}
+
 
 @end

@@ -10,6 +10,7 @@
 		F41DC51B2792C41200121FBE /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F41DC51A2792C41200121FBE /* AVFoundation.framework */; };
 		F41DC51E2792C43400121FBE /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F41DC51D2792C43400121FBE /* AudioToolbox.framework */; };
 		F41DC5212792C44A00121FBE /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F41DC5202792C44A00121FBE /* VideoToolbox.framework */; };
+		F41DC5262792C98F00121FBE /* JLAACACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F41DC5242792C98F00121FBE /* JLAACACodec.cpp */; };
 		F442354B2778076800F8B730 /* JLAudioResample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F44235492778076800F8B730 /* JLAudioResample.cpp */; };
 		F44235512789812400F8B730 /* JLPlayWAV.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F442354F2789812400F8B730 /* JLPlayWAV.cpp */; };
 		F4B9F567276F0D2400F631A4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F4B9F566276F0D2400F631A4 /* AppDelegate.m */; };
@@ -26,6 +27,8 @@
 		F41DC51A2792C41200121FBE /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		F41DC51D2792C43400121FBE /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		F41DC5202792C44A00121FBE /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
+		F41DC5242792C98F00121FBE /* JLAACACodec.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = JLAACACodec.cpp; sourceTree = "<group>"; };
+		F41DC5252792C98F00121FBE /* JLAACACodec.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = JLAACACodec.hpp; sourceTree = "<group>"; };
 		F44235492778076800F8B730 /* JLAudioResample.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = JLAudioResample.cpp; sourceTree = "<group>"; };
 		F442354A2778076800F8B730 /* JLAudioResample.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = JLAudioResample.hpp; sourceTree = "<group>"; };
 		F442354F2789812400F8B730 /* JLPlayWAV.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = JLPlayWAV.cpp; sourceTree = "<group>"; };
@@ -108,6 +111,8 @@
 				F44235502789812400F8B730 /* JLPlayWAV.hpp */,
 				F44235492778076800F8B730 /* JLAudioResample.cpp */,
 				F442354A2778076800F8B730 /* JLAudioResample.hpp */,
+				F41DC5242792C98F00121FBE /* JLAACACodec.cpp */,
+				F41DC5252792C98F00121FBE /* JLAACACodec.hpp */,
 				F4B9F56B276F0D2600F631A4 /* Assets.xcassets */,
 				F4B9F56D276F0D2600F631A4 /* Main.storyboard */,
 				F4B9F570276F0D2600F631A4 /* Info.plist */,
@@ -192,6 +197,7 @@
 				F4B9F572276F0D2600F631A4 /* main.m in Sources */,
 				F4B9F567276F0D2400F631A4 /* AppDelegate.m in Sources */,
 				F442354B2778076800F8B730 /* JLAudioResample.cpp in Sources */,
+				F41DC5262792C98F00121FBE /* JLAACACodec.cpp in Sources */,
 				F4B9F5D42770E88A00F631A4 /* JLPlayPCM.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
