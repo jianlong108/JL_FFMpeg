@@ -11,8 +11,7 @@
 #import "JLPlayPCM.hpp"
 #import "JLPCMToWAV.hpp"
 #import "JLPlayWAV.hpp"
-
-//#import <AVFoundation/AVFoundation.h>
+#import "JLAudioResample.hpp"
 
 
 @interface ViewController ()
@@ -65,7 +64,7 @@
     
     
     _beiginRecordSwitch = [[NSSwitch alloc] init];
-    _beiginRecordSwitch.frame = CGRectMake(200, 0, 188, 44);
+    _beiginRecordSwitch.frame = CGRectMake(400, 0, 44, 44);
     [self.view addSubview:_beiginRecordSwitch];
     
     
@@ -76,6 +75,9 @@
     [self.view addSubview:pcmToWAVBtn];
     
     
+    NSButton *audioResampleBtn = [NSButton buttonWithTitle:@"音频重采样" target:self action:@selector(audioResample:)];
+    audioResampleBtn.frame = CGRectMake(200, 100, 188, 44);
+    [self.view addSubview:audioResampleBtn];
 }
 
 - (void)endRecord:(id)sender
@@ -131,6 +133,11 @@
 - (void)endPlayWAV:(id)sender
 {
     self->playWAVObj->stopPlay = true;
+}
+
+- (void)audioResample:(id)sender
+{
+    JLAudioResample::resampleAudio("/Users/dalong/Desktop/AV/44100_s16le_2.pcm", 44100, AV_SAMPLE_FMT_S16, 2, "/Users/dalong/Desktop/AV/48000_f32le_2.pcm", 48000, AV_SAMPLE_FMT_FLT, 2);
 }
 
 @end
