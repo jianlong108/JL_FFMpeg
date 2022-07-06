@@ -64,8 +64,7 @@ static int encode(AVCodecContext *ctx,
 void JLAACCodec::aacEncode(AudioEncodeSpec &in,
                       const char *outFilename)
 {
-    // 编码器
-    AVCodec *codec = nullptr;
+    
     // 上下文
     AVCodecContext *ctx = nullptr;
 
@@ -85,9 +84,9 @@ void JLAACCodec::aacEncode(AudioEncodeSpec &in,
     //目标文件
     ofstream outAACFile(outFilename, ios::out | ios::binary);
 
-    AVCodec *codec1 = avcodec_find_encoder(AV_CODEC_ID_AAC);
+    const AVCodec *codec1 = avcodec_find_encoder(AV_CODEC_ID_AAC);
 
-    AVCodec *codec2 = avcodec_find_encoder_by_name("aac");
+    const AVCodec *codec2 = avcodec_find_encoder_by_name("aac");
 
     // true
     cout << (codec1 == codec2) << endl;
@@ -95,7 +94,8 @@ void JLAACCodec::aacEncode(AudioEncodeSpec &in,
     // aac
     cout << codec1->name << endl;
     // 获取fdk-aac编码器
-    codec = avcodec_find_encoder_by_name("libfdk_aac");
+    // 编码器
+    const AVCodec *codec = avcodec_find_encoder_by_name("libfdk_aac");
     if (!codec) {
         cout << "encoder libfdk_aac not found";
         return;

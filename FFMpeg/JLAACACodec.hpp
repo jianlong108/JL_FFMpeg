@@ -12,6 +12,7 @@
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavutil/avutil.h>
+#include <libavutil/channel_layout.h>
 }
 
 // 错误处理

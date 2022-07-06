@@ -338,6 +338,7 @@
 				HEADER_SEARCH_PATHS = (
 					/usr/local/ffmpeg/include/,
 					/usr/local/Cellar/sdl2/2.0.14_1/include/,
+					/usr/local/Cellar/sdl2/2.0.22/include/,
 				);
 				INFOPLIST_FILE = FFMpeg/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -347,6 +348,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"/usr/local/ffmpeg/lib/**",
 					"/usr/local/Cellar/sdl2/2.0.14_1/lib/**",
+					/usr/local/Cellar/sdl2/2.0.22/lib,
 				);
 				OTHER_LDFLAGS = (
 					"-l\"avutil\"",
@@ -373,6 +375,7 @@
 				HEADER_SEARCH_PATHS = (
 					/usr/local/ffmpeg/include/,
 					/usr/local/Cellar/sdl2/2.0.14_1/include/,
+					/usr/local/Cellar/sdl2/2.0.22/include/,
 				);
 				INFOPLIST_FILE = FFMpeg/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -382,6 +385,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"/usr/local/ffmpeg/lib/**",
 					"/usr/local/Cellar/sdl2/2.0.14_1/lib/**",
+					/usr/local/Cellar/sdl2/2.0.22/lib,
 				);
 				OTHER_LDFLAGS = (
 					"-l\"avutil\"",

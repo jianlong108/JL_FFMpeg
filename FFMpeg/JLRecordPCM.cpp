@@ -22,7 +22,7 @@ void showSpec(AVFormatContext *ctx);
 
 void JLRecordPCM::beginRecord()
 {
-    AVInputFormat *inFmt = av_find_input_format("avfoundation");
+    const AVInputFormat *inFmt = av_find_input_format("avfoundation");
     if (!inFmt) {
         cout << "找不到输入格式: avfoundation" << endl;
         return;
