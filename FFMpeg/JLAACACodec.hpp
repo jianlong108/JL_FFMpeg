@@ -33,9 +33,15 @@ typedef struct {
 class JLAACCodec {
 public:
     JLAACCodec();
-
+    
+    // 编码
     static void aacEncode(AudioEncodeSpec &in,
                           const char *outFilename);
+    
+    // 解码
+    static void aacDecode(const char *inFilename,
+                          AudioEncodeSpec &out);
+
 };
 
 #endif /* JLAACACodec_hpp */
