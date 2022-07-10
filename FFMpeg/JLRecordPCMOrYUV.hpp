@@ -10,10 +10,11 @@
 
 #include <stdio.h>
 
-class JLRecordPCM {
+class JLRecordPCMOrYUV {
 public:
     bool stopRecord;
-    void beginRecord();
+    void beginRecordPCM();
+    void beginRecordYUV();
 };
 
 #endif /* RecordPCM_hpp */

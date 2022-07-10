@@ -7,7 +7,7 @@
 
 #import "ViewController.h"
 
-#import "JLRecordPCM.hpp"
+#import "JLRecordPCMOrYUV.hpp"
 #import "JLPlayPCM.hpp"
 #import "JLPCMToWAV.hpp"
 #import "JLPlayWAV.hpp"
@@ -22,7 +22,7 @@ NSTabViewDelegate
 ,NSTableViewDataSource
 >
 {
-    JLRecordPCM *recordObj;
+    JLRecordPCMOrYUV *recordObj;
     JLPlayPCM *playPCMObj;
     JLPlayWAV *playWAVObj;
 }
@@ -138,6 +138,15 @@ NSTabViewDelegate
     NSButton *aacDecodeBtn = [NSButton buttonWithTitle:@"aac解码" target:self action:@selector(aacDecode:)];
     aacDecodeBtn.frame = CGRectMake(200, 200, 188, 44);
     [self.view addSubview:aacDecodeBtn];
+    
+    NSButton *beiginRecordYUVBtn = [NSButton buttonWithTitle:@"开始录制yuv" target:self action:@selector(beginRecordYUV:)];
+    beiginRecordYUVBtn.frame = CGRectMake(0, 250, 188, 44);
+    [self.view addSubview:beiginRecordYUVBtn];
+    
+    
+    NSButton *endRecordYUVBtn = [NSButton buttonWithTitle:@"停止录制yuv" target:self action:@selector(endRecordYUV:)];
+    endRecordYUVBtn.frame = CGRectMake(200, 250, 188, 44);
+    [self.view addSubview:endRecordYUVBtn];
 }
 
 - (NSScrollView *)scrollView//容器视图
@@ -190,8 +199,8 @@ NSTabViewDelegate
 {
     _beiginRecordSwitch.state = NSControlStateValueOff;
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        self->recordObj = new JLRecordPCM;
-        self->recordObj->beginRecord();
+        self->recordObj = new JLRecordPCMOrYUV;
+        self->recordObj->beginRecordPCM();
         return;
     });
 }
@@ -260,6 +269,23 @@ NSTabViewDelegate
     };
 //    JLAACCodec::aacEncode(spec, "/Users/dalong/Desktop/AV/aacCode.aac");
     JLAACCodec::aacDecode("/Users/jl/Downloads/output.aac", spec);
+}
+
+- (void)endRecordYUV:(id)sender
+{
+    if (recordObj->stopRecord ==  false) {
+        recordObj->stopRecord = true;
+        self.beiginRecordSwitch.state = NSControlStateValueOn;
+    }
+}
+- (void)beginRecordYUV:(id)sender
+{
+    _beiginRecordSwitch.state = NSControlStateValueOff;
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        self->recordObj = new JLRecordPCMOrYUV;
+        self->recordObj->beginRecordYUV();
+        return;
+    });
 }
 
 @end
