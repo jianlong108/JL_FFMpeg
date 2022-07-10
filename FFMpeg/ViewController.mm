@@ -14,8 +14,13 @@
 #import "JLAudioResample.hpp"
 #import "JLAACACodec.hpp"
 
+#import <Masonry/Masonry.h>
 
 @interface ViewController ()
+<
+NSTabViewDelegate
+,NSTableViewDataSource
+>
 {
     JLRecordPCM *recordObj;
     JLPlayPCM *playPCMObj;
@@ -26,14 +31,59 @@
 @property(nonatomic, assign) BOOL stopRecord;
 @property(nonatomic, assign) BOOL stopPlay;
 
-
+@property (nonatomic, strong) NSScrollView *scrollView;
+@property (nonatomic, strong) NSTableView *tableView;
 
 @end
 
 @implementation ViewController
 
+//- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
+//{
+//    return 10;
+//}
+//
+//- (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+//{
+//    NSTableCellView *cell = [tableView makeViewWithIdentifier:tableColumn.identifier owner:self];
+//    if (!cell) {
+//        cell = [[NSTableCellView alloc] init];
+//    }
+//    NSTextField *textField = [[NSTextField alloc] initWithFrame:CGRectMake(15, 20, 216, 17)];
+//    if (tableColumn.identifier == NSUserInterfaceItemIdentifier(@"firstCol")) {
+//        textField.stringValue = @(row).stringValue;
+//    } else {
+//        textField.stringValue = @"Hello World";
+//    }
+//
+//    [cell addSubview:textField];
+////    cell.textField = textField;
+//    textField.editable = NO;
+//    textField.drawsBackground = NO;
+//    textField.bordered = NO;
+//    textField.translatesAutoresizingMaskIntoConstraints = NO;
+//    return cell;
+//}
+//
+//- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+//{
+//    return nil;
+//}
+//- (void)tableView:(NSTableView *)tableView didClickTableColumn:(NSTableColumn *)tableColumn
+//{
+//    NSLog(@"---点击了%ld-------",tableView.selectedRow);
+//}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+//    [self.view addSubview:self.scrollView];
+//    [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.edges.equalTo(self.view);
+//    }];
+//    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.edges.equalTo(self.view);
+//    }];
     
     NSButton *beiginRecordBtn = [NSButton buttonWithTitle:@"开始录音pcm" target:self action:@selector(beginRecord:)];
     beiginRecordBtn.frame = CGRectMake(0, 0, 188, 44);
@@ -84,6 +134,49 @@
     NSButton *aacEncodeBtn = [NSButton buttonWithTitle:@"aac编码" target:self action:@selector(aacEncode:)];
     aacEncodeBtn.frame = CGRectMake(0, 200, 188, 44);
     [self.view addSubview:aacEncodeBtn];
+    
+    NSButton *aacDecodeBtn = [NSButton buttonWithTitle:@"aac解码" target:self action:@selector(aacDecode:)];
+    aacDecodeBtn.frame = CGRectMake(200, 200, 188, 44);
+    [self.view addSubview:aacDecodeBtn];
+}
+
+- (NSScrollView *)scrollView//容器视图
+{
+    if (!_scrollView) {
+        _scrollView = [[NSScrollView alloc] initWithFrame:CGRectMake(0, 0, 400, 200)];
+        [_scrollView setAutoresizingMask: NSViewWidthSizable | NSViewHeightSizable];
+        _scrollView.documentView = self.tableView;
+        _scrollView.hasVerticalScroller = YES;
+    }
+    return _scrollView;
+}
+
+- (NSTableView *)tableView
+{
+    if (!_tableView) {
+        _tableView = [[NSTableView alloc] initWithFrame:CGRectMake(0, 0, 200, 200)];
+        [_tableView setAutoresizingMask: NSViewWidthSizable | NSViewHeightSizable];
+        _tableView.delegate = (id)self;
+        _tableView.dataSource = self;
+        _tableView.allowsColumnReordering = NO;
+        _tableView.allowsColumnResizing = NO;
+        _tableView.focusRingType = NSFocusRingTypeNone;
+        _tableView.rowHeight = 44;
+        _tableView.selectionHighlightStyle = NSTableViewSelectionHighlightStyleNone;
+        
+        NSTableColumn *firstCol = [[NSTableColumn alloc] initWithIdentifier:@"firstCol"];
+        firstCol.width = 200;
+        firstCol.title = @"第一列";
+        [_tableView addTableColumn:firstCol];
+        
+        
+//        NSTableColumn *secondCol = [[NSTableColumn alloc] initWithIdentifier:@"secondCol"];
+//        secondCol.width = self.scrollView.bounds.size.width - 200;
+//        secondCol.title = @"第二列";
+//        [_tableView addTableColumn:secondCol];
+                
+    }
+    return _tableView;
 }
 
 - (void)endRecord:(id)sender
@@ -157,5 +250,16 @@
     JLAACCodec::aacEncode(spec, "/Users/dalong/Desktop/AV/aacCode.aac");
 }
 
+- (void)aacDecode:(id)sender
+{
+    AudioEncodeSpec spec = {
+        "/Users/jl/Downloads/44100_s16le_2_aacDecodeOutput.pcm",
+        44100,
+        AV_SAMPLE_FMT_S16,
+        AV_CH_LAYOUT_STEREO
+    };
+//    JLAACCodec::aacEncode(spec, "/Users/dalong/Desktop/AV/aacCode.aac");
+    JLAACCodec::aacDecode("/Users/jl/Downloads/output.aac", spec);
+}
 
 @end
