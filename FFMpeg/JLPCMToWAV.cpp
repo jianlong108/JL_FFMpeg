@@ -31,8 +31,11 @@ void JLPCMToWAV::pcm2wav(WAVHeader &header,
 //    long size = ftell(pcmFile);
     //seek到文件头
 //    fseek(pcmFile, 0, SEEK_SET);
+    
+    //36 37行加在一起获取文件长度
     pcmFile.seekg(0, pcmFile.end);
     size_t size = pcmFile.tellg();
+    
     pcmFile.seekg(0, pcmFile.beg);
     header.dataChunkDataSize = size;
     header.riffChunkDataSize = header.dataChunkDataSize

@@ -6,14 +6,13 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#include "YUVObject.h"
-//#include "YUVItem.hpp"
+#include "YUVPlayItem.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface YUVMacOSPlayer : NSView
 
-- (void)setUpYUVItem:(YUVObject *)yuv;
+- (void)setUpYUVItem:(YUVPlayItem *)yuv;
 - (void)play;
 
 @end

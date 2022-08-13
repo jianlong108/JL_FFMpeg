@@ -22,7 +22,6 @@ typedef struct {
     AVPixelFormat pixelFormat;
     const char *fileName;
     int fps;
-    const char *fullFilePath;
 } YUVItem;
 
 class YUVCore {
@@ -40,21 +39,22 @@ public:
     void pause();
     bool isPlaying();
 
-    void setYUVItem(YUVItem &item);
+    void setYUVItem(YUVItem *item);
     
     State getState();
     
     YUVCore();
     ~YUVCore();
     
-    void  getImageDataFromOneFrame(char *imgData,int *error);
+    char* getImageDataFromOneFrame(int *error);
     
 private:
     /// 当前的播放状态
     State _currentState = Stopped;
     
     /// 当前播放的yuv
-    YUVItem _currentItem;
+    YUVItem *_currentItem = nullptr;
+    std::ifstream *_file = nullptr;
     
     /// 一帧图片的大小
     int _imgSize = 0;
@@ -65,7 +65,6 @@ private:
     
     void freeCurrentImage();
 //    FILE *_file = nullptr;
-    std::ifstream *_file = nullptr;
 };
 
 #endif /* YUVCore_hpp */

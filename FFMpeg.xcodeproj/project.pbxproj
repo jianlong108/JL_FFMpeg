@@ -15,9 +15,11 @@
 		68A917A3289FB91B00E16BBA /* 2.yuv in Resources */ = {isa = PBXBuildFile; fileRef = 68A917A2289FB91B00E16BBA /* 2.yuv */; };
 		68A917A5289FBB4400E16BBA /* file.yuv in Resources */ = {isa = PBXBuildFile; fileRef = 68A917A4289FBB4400E16BBA /* file.yuv */; };
 		68A917A828A0BEA900E16BBA /* YUVMacOSPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 68A917A728A0BEA900E16BBA /* YUVMacOSPlayer.mm */; };
-		68A917E028A4B19900E16BBA /* YUVObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 68A917DE28A4B19900E16BBA /* YUVObject.m */; };
+		68A917E028A4B19900E16BBA /* YUVPlayItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 68A917DE28A4B19900E16BBA /* YUVPlayItem.m */; };
 		68A917E328A4B55E00E16BBA /* YUVCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68A917E128A4B55E00E16BBA /* YUVCore.cpp */; };
 		68FB04E328A67F09007B68E1 /* FFmpegTool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68FB04E128A67F09007B68E1 /* FFmpegTool.cpp */; };
+		68FB04E828A6A285007B68E1 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 68FB04E728A6A285007B68E1 /* libc++.tbd */; };
+		68FB04EA28A6A28F007B68E1 /* libc.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 68FB04E928A6A28F007B68E1 /* libc.tbd */; };
 		F41DC51B2792C41200121FBE /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F41DC51A2792C41200121FBE /* AVFoundation.framework */; };
 		F41DC51E2792C43400121FBE /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F41DC51D2792C43400121FBE /* AudioToolbox.framework */; };
 		F41DC5212792C44A00121FBE /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F41DC5202792C44A00121FBE /* VideoToolbox.framework */; };
@@ -45,12 +47,14 @@
 		68A917A4289FBB4400E16BBA /* file.yuv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = file.yuv; sourceTree = "<group>"; };
 		68A917A628A0BEA900E16BBA /* YUVMacOSPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YUVMacOSPlayer.h; sourceTree = "<group>"; };
 		68A917A728A0BEA900E16BBA /* YUVMacOSPlayer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = YUVMacOSPlayer.mm; sourceTree = "<group>"; };
-		68A917DE28A4B19900E16BBA /* YUVObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YUVObject.m; sourceTree = "<group>"; };
-		68A917DF28A4B19900E16BBA /* YUVObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YUVObject.h; sourceTree = "<group>"; };
+		68A917DE28A4B19900E16BBA /* YUVPlayItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YUVPlayItem.m; sourceTree = "<group>"; };
+		68A917DF28A4B19900E16BBA /* YUVPlayItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YUVPlayItem.h; sourceTree = "<group>"; };
 		68A917E128A4B55E00E16BBA /* YUVCore.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = YUVCore.cpp; sourceTree = "<group>"; };
 		68A917E228A4B55E00E16BBA /* YUVCore.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = YUVCore.hpp; sourceTree = "<group>"; };
 		68FB04E128A67F09007B68E1 /* FFmpegTool.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FFmpegTool.cpp; sourceTree = "<group>"; };
 		68FB04E228A67F09007B68E1 /* FFmpegTool.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = FFmpegTool.hpp; sourceTree = "<group>"; };
+		68FB04E728A6A285007B68E1 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		68FB04E928A6A28F007B68E1 /* libc.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libc.tbd; path = usr/lib/libc.tbd; sourceTree = SDKROOT; };
 		9E1FC71984114BC115C136B3 /* Pods_FFMpeg.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FFMpeg.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A00D395CB64DB78745114ACC /* Pods-FFMpeg.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FFMpeg.release.xcconfig"; path = "Target Support Files/Pods-FFMpeg/Pods-FFMpeg.release.xcconfig"; sourceTree = "<group>"; };
 		F41DC51A2792C41200121FBE /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -86,6 +90,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				68FB04EA28A6A28F007B68E1 /* libc.tbd in Frameworks */,
+				68FB04E828A6A285007B68E1 /* libc++.tbd in Frameworks */,
 				68A9179F289FB87300E16BBA /* GLUT.framework in Frameworks */,
 				F41DC5212792C44A00121FBE /* VideoToolbox.framework in Frameworks */,
 				F41DC51E2792C43400121FBE /* AudioToolbox.framework in Frameworks */,
@@ -117,8 +123,8 @@
 				68A91798289FAE2B00E16BBA /* Shader.vsh */,
 				68A917A628A0BEA900E16BBA /* YUVMacOSPlayer.h */,
 				68A917A728A0BEA900E16BBA /* YUVMacOSPlayer.mm */,
-				68A917DE28A4B19900E16BBA /* YUVObject.m */,
-				68A917DF28A4B19900E16BBA /* YUVObject.h */,
+				68A917DE28A4B19900E16BBA /* YUVPlayItem.m */,
+				68A917DF28A4B19900E16BBA /* YUVPlayItem.h */,
 				68A917E128A4B55E00E16BBA /* YUVCore.cpp */,
 				68A917E228A4B55E00E16BBA /* YUVCore.hpp */,
 			);
@@ -128,6 +134,8 @@
 		F41DC5192792C41200121FBE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				68FB04E928A6A28F007B68E1 /* libc.tbd */,
+				68FB04E728A6A285007B68E1 /* libc++.tbd */,
 				68A9179E289FB87300E16BBA /* GLUT.framework */,
 				F41DC5202792C44A00121FBE /* VideoToolbox.framework */,
 				F41DC51D2792C43400121FBE /* AudioToolbox.framework */,
@@ -316,7 +324,7 @@
 				68A917E328A4B55E00E16BBA /* YUVCore.cpp in Sources */,
 				F41DC5262792C98F00121FBE /* JLAACACodec.cpp in Sources */,
 				F4B9F5D42770E88A00F631A4 /* JLPlayPCM.cpp in Sources */,
-				68A917E028A4B19900E16BBA /* YUVObject.m in Sources */,
+				68A917E028A4B19900E16BBA /* YUVPlayItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -385,7 +393,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -438,7 +446,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -479,6 +487,7 @@
 					"-l\"sdl2\"",
 					"-l\"swresample\"",
 					"-l\"avfilter\"",
+					"-l\"swscale\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = JL.FFMpeg;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -519,6 +528,7 @@
 					"-l\"sdl2\"",
 					"-l\"swresample\"",
 					"-l\"avfilter\"",
+					"-l\"swscale\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = JL.FFMpeg;
 				PRODUCT_NAME = "$(TARGET_NAME)";

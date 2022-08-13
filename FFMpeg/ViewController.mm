@@ -17,7 +17,10 @@
 #import <Masonry/Masonry.h>
 #import "YUVView.h"
 #import "YUVMacOSPlayer.h"
-#import "YUVObject.h"
+#import "YUVPlayItem.h"
+
+//#include <iostream>
+//#include <fstream>
 
 @interface ViewController ()
 <
@@ -28,6 +31,7 @@ NSTabViewDelegate
     JLRecordPCMOrYUV *recordObj;
     JLPlayPCM *playPCMObj;
     JLPlayWAV *playWAVObj;
+    FILE * file;
 }
 
 @property(nonatomic, strong) NSSwitch *beiginRecordSwitch;
@@ -38,14 +42,13 @@ NSTabViewDelegate
 @property (nonatomic, strong) NSTableView *tableView;
 
 
-@property (strong,nonatomic)     YUVView * playView;
+@property (nonatomic, strong) YUVView * playView;
+
+@property (nonatomic, strong) YUVMacOSPlayer *osPlayer;
+
 @end
 
 @implementation ViewController
-
-{
-    FILE * file;
-}
 
 //#define filename @"a"
 //#define yuv_width 1920
@@ -59,129 +62,103 @@ NSTabViewDelegate
 #define yuv_width 176
 #define yuv_height 144
 
-- (void)draw {
-    if (self.playView.stop) {
-        
-        self.playView.stop = NO;
-        NSLog(@"结束了。");
-        return;
-    }
-    
-//    NSLog(@"%@",[NSData dataWithBytes:buf length:yuv_length]);
-    
-    
-//    _playView.drawBlock = ^{
-//        size_t yuv_length = yuv_width*yuv_height*3/2;
-//        Byte buf[yuv_length];
-//        fread(buf, 1, yuv_length, file);
-//        int isEnd = feof(file);
-//        if (isEnd > 0) {
-//            fseek(file, 0, SEEK_SET);
-//        }
-//        [self.playView displayYUV_I420:(char*)buf width:yuv_width height:yuv_height];
-//
-//    };
-    size_t yuv_length = yuv_width*yuv_height*3/2;
-    Byte buf[yuv_length];
-    fread(buf, 1, yuv_length, file);
-    if (feof(file) > 0) {
-        self.playView.stop = YES;
-        fseek(file, 0, SEEK_SET);
-    }
-    [self.playView displayYUV_I420:(char*)buf width:yuv_width height:yuv_height];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self draw];
-    });
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
-    YUVMacOSPlayer *osPlayer = [[YUVMacOSPlayer alloc] initWithFrame:CGRectMake(20,300,640,480)];
-    [osPlayer setWantsLayer:YES];
+
+    _osPlayer = [[YUVMacOSPlayer alloc] initWithFrame:CGRectMake(20,360,640,480)];
+    
+    YUVPlayItem *yuv = [[YUVPlayItem alloc] init];
+//    yuv.w = 640;
+//    yuv.h = 457;
+//    yuv.fps = 30;
+//    yuv.pixelFormat = YUVPlayItemPixFormateYUV420P;
+//    yuv.fileName = @"/Users/jl/Downloads/AVA/11-YUV420P.yuv";
+    
+    
+    yuv.w = 640;
+    yuv.h = 1080;
+    yuv.fps = 30;
+    yuv.pixelFormat = YUVPlayItemPixFormateYUV420P;
+    yuv.fileName = @"/Users/jl/Downloads/AVA/050.yuv";
+    
+//    yuv.w = 960;
+//    yuv.h = 720;
+//    yuv.fps = 30;
+//    yuv.pixelFormat = YUVPlayItemPixFormateYUV420P;
+//    yuv.fileName = @"/Users/jl/Downloads/AVA/xq.yuv";
     
 
-    YUVObject *yuv = [[YUVObject alloc] init];
-    yuv.w = 640;
-    yuv.h = 480;
-    yuv.fileName = @"/Users/jl/Downloads/AVA/xq.yuv";
-    osPlayer.layer.backgroundColor = [NSColor greenColor].CGColor;
-    [osPlayer setUpYUVItem:yuv];
-    [osPlayer play];
-    [self.view addSubview:osPlayer];
+    [_osPlayer setUpYUVItem:yuv];
+//    [osPlayer play];
+    [self.view addSubview:_osPlayer];
 
-//    NSString * path = [NSString stringWithFormat:@"/Users/jl/Downloads/%@.yuv",filename];
-////    NSString * path = [[NSBundle mainBundle] pathForResource:@"file" ofType:@"yuv"];
-//    file = fopen(path.UTF8String, "r");
-//    _playView = [[YUVView alloc]initWithFrame:CGRectMake(0,300,320,480)];
-//    [self.view addSubview:_playView];
-//
-//
-//    NSButton *beiginPlayYUVBtn = [NSButton buttonWithTitle:@"开始播放yuv" target:self action:@selector(draw)];
-//    beiginPlayYUVBtn.frame = CGRectMake(350, 300, 188, 44);
-//    [self.view addSubview:beiginPlayYUVBtn];
-//
-//    NSButton *beiginRecordBtn = [NSButton buttonWithTitle:@"开始录音pcm" target:self action:@selector(beginRecord:)];
-//    beiginRecordBtn.frame = CGRectMake(0, 0, 188, 44);
-//    [self.view addSubview:beiginRecordBtn];
-//
-//
-//    NSButton *endRecordBtn = [NSButton buttonWithTitle:@"停止录音pcm" target:self action:@selector(endRecord:)];
-//    endRecordBtn.frame = CGRectMake(200, 0, 188, 44);
-//    [self.view addSubview:endRecordBtn];
-//
-//    NSButton *beiginPlayBtn = [NSButton buttonWithTitle:@"开始播放pcm" target:self action:@selector(beginPlay:)];
-//    beiginPlayBtn.frame = CGRectMake(0, 50, 188, 44);
-//    [self.view addSubview:beiginPlayBtn];
-//
-//
-//    NSButton *endPlayBtn = [NSButton buttonWithTitle:@"停止播放pcm" target:self action:@selector(endPlay:)];
-//    endPlayBtn.frame = CGRectMake(200, 50, 188, 44);
-//    [self.view addSubview:endPlayBtn];
-//
-//
-//    NSButton *beiginPlayWAVBtn = [NSButton buttonWithTitle:@"开始播放wav" target:self action:@selector(beginPlayWAV:)];
-//    beiginPlayWAVBtn.frame = CGRectMake(0, 150, 188, 44);
-//    [self.view addSubview:beiginPlayWAVBtn];
-//
-//
-//    NSButton *endPlayWAVBtn = [NSButton buttonWithTitle:@"停止播放wav" target:self action:@selector(endPlayWAV:)];
-//    endPlayWAVBtn.frame = CGRectMake(200, 150, 188, 44);
-//    [self.view addSubview:endPlayWAVBtn];
-//
-//
-//    _beiginRecordSwitch = [[NSSwitch alloc] init];
-//    _beiginRecordSwitch.frame = CGRectMake(400, 0, 44, 44);
-//    [self.view addSubview:_beiginRecordSwitch];
-//
-//
-//    _beiginRecordSwitch.state = NSControlStateValueOn;
-//
-//    NSButton *pcmToWAVBtn = [NSButton buttonWithTitle:@"开始转换pcm2wav" target:self action:@selector(beginConvert:)];
-//    pcmToWAVBtn.frame = CGRectMake(0, 100, 188, 44);
-//    [self.view addSubview:pcmToWAVBtn];
-//
-//
-//    NSButton *audioResampleBtn = [NSButton buttonWithTitle:@"音频重采样" target:self action:@selector(audioResample:)];
-//    audioResampleBtn.frame = CGRectMake(200, 100, 188, 44);
-//    [self.view addSubview:audioResampleBtn];
-//
-//
-//    NSButton *aacEncodeBtn = [NSButton buttonWithTitle:@"aac编码" target:self action:@selector(aacEncode:)];
-//    aacEncodeBtn.frame = CGRectMake(0, 200, 188, 44);
-//    [self.view addSubview:aacEncodeBtn];
-//
-//    NSButton *aacDecodeBtn = [NSButton buttonWithTitle:@"aac解码" target:self action:@selector(aacDecode:)];
-//    aacDecodeBtn.frame = CGRectMake(200, 200, 188, 44);
-//    [self.view addSubview:aacDecodeBtn];
-//
-//    NSButton *beiginRecordYUVBtn = [NSButton buttonWithTitle:@"开始录制yuv" target:self action:@selector(beginRecordYUV:)];
-//    beiginRecordYUVBtn.frame = CGRectMake(0, 250, 188, 44);
-//    [self.view addSubview:beiginRecordYUVBtn];
-//
-//
-//    NSButton *endRecordYUVBtn = [NSButton buttonWithTitle:@"停止录制yuv" target:self action:@selector(endRecordYUV:)];
-//    endRecordYUVBtn.frame = CGRectMake(200, 250, 188, 44);
-//    [self.view addSubview:endRecordYUVBtn];
+
+    NSButton *beiginPlayYUVBtn = [NSButton buttonWithTitle:@"开始播放yuv" target:self action:@selector(play)];
+    beiginPlayYUVBtn.frame = CGRectMake(350, 300, 188, 44);
+    [self.view addSubview:beiginPlayYUVBtn];
+
+    NSButton *beiginRecordBtn = [NSButton buttonWithTitle:@"开始录音pcm" target:self action:@selector(beginRecord:)];
+    beiginRecordBtn.frame = CGRectMake(0, 0, 188, 44);
+    [self.view addSubview:beiginRecordBtn];
+
+
+    NSButton *endRecordBtn = [NSButton buttonWithTitle:@"停止录音pcm" target:self action:@selector(endRecord:)];
+    endRecordBtn.frame = CGRectMake(200, 0, 188, 44);
+    [self.view addSubview:endRecordBtn];
+
+    NSButton *beiginPlayBtn = [NSButton buttonWithTitle:@"开始播放pcm" target:self action:@selector(beginPlay:)];
+    beiginPlayBtn.frame = CGRectMake(0, 50, 188, 44);
+    [self.view addSubview:beiginPlayBtn];
+
+
+    NSButton *endPlayBtn = [NSButton buttonWithTitle:@"停止播放pcm" target:self action:@selector(endPlay:)];
+    endPlayBtn.frame = CGRectMake(200, 50, 188, 44);
+    [self.view addSubview:endPlayBtn];
+
+
+    NSButton *beiginPlayWAVBtn = [NSButton buttonWithTitle:@"开始播放wav" target:self action:@selector(beginPlayWAV:)];
+    beiginPlayWAVBtn.frame = CGRectMake(0, 150, 188, 44);
+    [self.view addSubview:beiginPlayWAVBtn];
+
+
+    NSButton *endPlayWAVBtn = [NSButton buttonWithTitle:@"停止播放wav" target:self action:@selector(endPlayWAV:)];
+    endPlayWAVBtn.frame = CGRectMake(200, 150, 188, 44);
+    [self.view addSubview:endPlayWAVBtn];
+
+
+    _beiginRecordSwitch = [[NSSwitch alloc] init];
+    _beiginRecordSwitch.frame = CGRectMake(400, 0, 44, 44);
+    [self.view addSubview:_beiginRecordSwitch];
+
+
+    _beiginRecordSwitch.state = NSControlStateValueOn;
+
+    NSButton *pcmToWAVBtn = [NSButton buttonWithTitle:@"开始转换pcm2wav" target:self action:@selector(beginConvert:)];
+    pcmToWAVBtn.frame = CGRectMake(0, 100, 188, 44);
+    [self.view addSubview:pcmToWAVBtn];
+
+
+    NSButton *audioResampleBtn = [NSButton buttonWithTitle:@"音频重采样" target:self action:@selector(audioResample:)];
+    audioResampleBtn.frame = CGRectMake(200, 100, 188, 44);
+    [self.view addSubview:audioResampleBtn];
+
+
+    NSButton *aacEncodeBtn = [NSButton buttonWithTitle:@"aac编码" target:self action:@selector(aacEncode:)];
+    aacEncodeBtn.frame = CGRectMake(0, 200, 188, 44);
+    [self.view addSubview:aacEncodeBtn];
+
+    NSButton *aacDecodeBtn = [NSButton buttonWithTitle:@"aac解码" target:self action:@selector(aacDecode:)];
+    aacDecodeBtn.frame = CGRectMake(200, 200, 188, 44);
+    [self.view addSubview:aacDecodeBtn];
+
+    NSButton *beiginRecordYUVBtn = [NSButton buttonWithTitle:@"开始录制yuv" target:self action:@selector(beginRecordYUV:)];
+    beiginRecordYUVBtn.frame = CGRectMake(0, 250, 188, 44);
+    [self.view addSubview:beiginRecordYUVBtn];
+
+
+    NSButton *endRecordYUVBtn = [NSButton buttonWithTitle:@"停止录制yuv" target:self action:@selector(endRecordYUV:)];
+    endRecordYUVBtn.frame = CGRectMake(200, 250, 188, 44);
+    [self.view addSubview:endRecordYUVBtn];
 }
 
 - (NSScrollView *)scrollView//容器视图
@@ -322,5 +299,48 @@ NSTabViewDelegate
         return;
     });
 }
+
+#pragma mark - action
+
+- (void)play
+{
+    [_osPlayer play];
+}
+
+- (void)draw {
+    if (self.playView.stop) {
+        
+        self.playView.stop = NO;
+        NSLog(@"结束了。");
+        return;
+    }
+    
+//    NSLog(@"%@",[NSData dataWithBytes:buf length:yuv_length]);
+    
+    
+//    _playView.drawBlock = ^{
+//        size_t yuv_length = yuv_width*yuv_height*3/2;
+//        Byte buf[yuv_length];
+//        fread(buf, 1, yuv_length, file);
+//        int isEnd = feof(file);
+//        if (isEnd > 0) {
+//            fseek(file, 0, SEEK_SET);
+//        }
+//        [self.playView displayYUV_I420:(char*)buf width:yuv_width height:yuv_height];
+//
+//    };
+    size_t yuv_length = yuv_width*yuv_height*3/2;
+    Byte buf[yuv_length];
+    fread(buf, 1, yuv_length, file);
+    if (feof(file) > 0) {
+        self.playView.stop = YES;
+        fseek(file, 0, SEEK_SET);
+    }
+    [self.playView displayYUV_I420:(char*)buf width:yuv_width height:yuv_height];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self draw];
+    });
+}
+
 
 @end

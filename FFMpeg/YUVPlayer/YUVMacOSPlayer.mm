@@ -12,13 +12,14 @@
 {
     YUVCore *_core;
     CVDisplayLinkRef displayLink;
+    YUVItem *item;
 }
 
 @property (nonatomic, strong) dispatch_source_t timer;
 @property (nonatomic, assign) CGRect dstRect;
 
 @property (nonatomic, strong) NSImageView *imgView;
-@property (nonatomic, strong) YUVObject *yuv;
+@property (nonatomic, strong) NSImage *imgData;
 
 @end
 
@@ -35,9 +36,12 @@
 - (void)_initlize
 {
     self->_core = new YUVCore;
+    self.wantsLayer = YES;
+    self.layer.backgroundColor = [NSColor redColor].CGColor;
+    
     _imgView = [[NSImageView alloc] initWithFrame:self.bounds];
     _imgView.wantsLayer = YES;
-    _imgView.layer.backgroundColor = [NSColor redColor].CGColor;
+    _imgView.layer.backgroundColor = [NSColor blueColor].CGColor;
     [self addSubview:_imgView];
 }
 
@@ -56,14 +60,14 @@
 }
 
 
-- (void)setUpYUVItem:(YUVObject *)yuv;
+- (void)setUpYUVItem:(YUVPlayItem *)yuv;
 {
-    _yuv = yuv;
-    YUVItem item = YUVItem();
-    item.width = yuv.w;
-    item.height = yuv.h;
-    item.pixelFormat = AV_PIX_FMT_YUVA420P;
-    item.fps = 30;
+    item = new YUVItem;
+    item->width = yuv.w;
+    item->height = yuv.h;
+    item->pixelFormat = (AVPixelFormat)yuv.pixelFormat;
+    item->fps = yuv.fps;
+    item->fileName = [yuv.fileName cStringUsingEncoding:NSUTF8StringEncoding];
     
     self->_core->setYUVItem(item);
     int w = CGRectGetWidth(self.frame);
@@ -91,45 +95,54 @@
     _dstRect = CGRectMake(dx, dy, dw, dh);
     NSLog(@"视频的矩形区域 :%@",NSStringFromRect(_dstRect));
     _imgView.frame = _dstRect;
+    [self setNeedsLayout:YES];
 }
 
 static int i = 0;
 - (void)drawView
 {
-    NSLog(@"%d",i++);
-    char *buffer = nil;
+    NSLog(@"drawView %d",i++);
     int error = 0;
-    self->_core->getImageDataFromOneFrame(buffer, &error);
-    if (!buffer) return;
-    
-    int width = self.yuv.w;
-    int height = self.yuv.h;
-    
+    char* buffer = self->_core->getImageDataFromOneFrame(&error);
+    if (error != 0 || !buffer) {
+        dispatch_cancel(self.timer);
+        self.timer = nil;
+        if (buffer) {
+            free(buffer);
+        }
+        return;
+    }
+    int width = item->width;
+    int height = item->height;
+
     //转为RGBA32
-    char* rgba = (char*)malloc(width*height*4);
-    for(int i=0; i < width*height; ++i) {
-        rgba[4*i] = buffer[3*i];
-        rgba[4*i+1] = buffer[3*i+1];
-        rgba[4*i+2] = buffer[3*i+2];
-        rgba[4*i+3] = 255;
+    //像素总数
+    int pixelCount = width * height;
+    int pixelTotalBytes = pixelCount * 4;
+    char* rgba = (char*)malloc(pixelTotalBytes);
+    for(int i=0; i < pixelCount; ++i) {
+        rgba[4*i] = buffer[3*i]; //R
+        rgba[4*i+1] = buffer[3*i+1];//G
+        rgba[4*i+2] = buffer[3*i+2];//B
+        rgba[4*i+3] = (char)255; //A 透明度全部改为1
     }
     
-    size_t bufferLength = width * height * 4;
+    size_t bufferLength = pixelTotalBytes; //宽*高*4(字节) 1个像素占用4个字节
     CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, rgba, bufferLength, NULL);
-    size_t bitsPerComponent = 8;
-    size_t bitsPerPixel = 32;
-    size_t bytesPerRow = 4 * width;
-    
+    size_t bitsPerComponent = 8;//每一个像素的色彩单元(R G B A) 占用的位数 8bit == 1B
+    size_t bitsPerPixel = 32;//RGBA = 4*8
+    size_t bytesPerRow = 4 * width; //每一行的字节数,一个像素4个字节 一行的像素数==width
+
     CGColorSpaceRef colorSpaceRef = CGColorSpaceCreateDeviceRGB();
     if(colorSpaceRef == NULL) {
         NSLog(@"Error allocating color space");
         CGDataProviderRelease(provider);
         return;
     }
-    
+
     CGBitmapInfo bitmapInfo = kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast;
     CGColorRenderingIntent renderingIntent = kCGRenderingIntentDefault;
-    
+
     CGImageRef iref = CGImageCreate(width,
                                     height,
                                     bitsPerComponent,
@@ -141,9 +154,9 @@ static int i = 0;
                                     NULL,       // decode
                                     YES,            // should interpolate
                                     renderingIntent);
-    
+
     uint32_t* pixels = (uint32_t*)malloc(bufferLength);
-    
+
     if(pixels == NULL) {
         NSLog(@"Error: Memory not allocated for bitmap");
         CGDataProviderRelease(provider);
@@ -151,7 +164,6 @@ static int i = 0;
         CGImageRelease(iref);
         return;
     }
-    
     CGContextRef context = CGBitmapContextCreate(pixels,
                                                  width,
                                                  height,
@@ -159,51 +171,48 @@ static int i = 0;
                                                  bytesPerRow,
                                                  colorSpaceRef,
                                                  bitmapInfo);
-    
     if(context == NULL) {
         NSLog(@"Error context not created");
         free(pixels);
     }
-    
-    NSImage *image = nil;
     if(context) {
-        
         CGContextDrawImage(context, CGRectMake(0.0f, 0.0f, width, height), iref);
-        
         CGImageRef imageRef = CGBitmapContextCreateImage(context);
-        image = [[NSImage alloc] initWithCGImage:imageRef size:CGSizeMake(width, height)];
-//        image = [UIImage imageWithCGImage:imageRef scale:[UIScreen mainScreen].scale orientation:UIImageOrientationUp];
-//        if([UIImage respondsToSelector:@selector(imageWithCGImage:scale:orientation:)]) {
-//            image = [UIImage imageWithCGImage:imageRef scale:1.0 orientation:UIImageOrientationUp];
-//        } else {
-//            image = [UIImage imageWithCGImage:imageRef];
+//        if (_imgData) {
+//            free(_imgData.TIFFRepresentation.bytes);
 //        }
-        
+        _imgData = [[NSImage alloc] initWithCGImage:imageRef size:CGSizeMake(width, height)];
         CGImageRelease(imageRef);
         CGContextRelease(context);
     }
-    
+
     CGColorSpaceRelease(colorSpaceRef);
     CGImageRelease(iref);
     CGDataProviderRelease(provider);
-    
+
     if(pixels) {
         free(pixels);
     }
-//    return image;
-    [self.imgView setImage:image];
+    if (buffer) {
+        free(buffer);
+        buffer = nil;
+    }
+    
+    if (!_imgData) return;
+    [self.imgView setImage:_imgData];
+    [self updateLayer];
 }
 
 
-- (CVReturn)getFrameForTime:(const CVTimeStamp*)outputTime
-{
+//- (CVReturn)getFrameForTime:(const CVTimeStamp*)outputTime
+//{
 //    @autoreleasepool {
 //        dispatch_sync(dispatch_get_main_queue(), ^{
-            [self drawView];
+//            [self drawView];
 //        });
 //    }
-    return kCVReturnSuccess;
-}
+//    return kCVReturnSuccess;
+//}
 
 //static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
 //                                      const CVTimeStamp* now,
@@ -218,7 +227,7 @@ static int i = 0;
 
 - (void)play
 {
-    if (!_yuv) {
+    if (!item) {
         return;
     }
 //    CGDirectDisplayID   displayID = CGMainDisplayID();
@@ -232,30 +241,34 @@ static int i = 0;
 //    CVDisplayLinkSetOutputCallback(displayLink, MyDisplayLinkCallback, (__bridge void *)self);
 //
 //    CVDisplayLinkStart(displayLink);
-    
-    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-     
-    dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
-     
-    self.timer = timer;
-    
-    // 定时任务调度设置,0秒后启动,每个5秒运行
-    dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW ,0);
-    dispatch_source_set_timer(self.timer, time, 1000/30 * NSEC_PER_MSEC, 3 * NSEC_PER_SEC);
-    
-    __weak typeof(self) weakSelf = self;
-    dispatch_source_set_event_handler(self.timer, ^{
-        // 定时任务
-        [weakSelf drawView];
-    });
-     
-    dispatch_source_set_cancel_handler(self.timer, ^{
-        // 定时取消回调
-        NSLog(@"source did cancel...");
-    });
-     
-    // 启动定时器
-    dispatch_resume(timer);
+    if (!self.timer) {
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+         
+        dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+         
+        self.timer = timer;
+        // 定时任务调度设置,0秒后启动,每个5秒运行
+        dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW ,0);
+        dispatch_source_set_timer(self.timer, time, 1000/30 * NSEC_PER_MSEC, 3 * NSEC_PER_SEC);
+        
+        __weak typeof(self) weakSelf = self;
+        dispatch_source_set_event_handler(self.timer, ^{
+            // 定时任务
+            @autoreleasepool {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf drawView];
+                });
+            }
+        });
+         
+        dispatch_source_set_cancel_handler(self.timer, ^{
+            // 定时取消回调
+            NSLog(@"source did cancel...");
+        });
+         
+        // 启动定时器
+        dispatch_resume(timer);
+    }
 }
 
 @end

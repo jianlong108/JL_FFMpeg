@@ -9,18 +9,18 @@
 #include <fstream>
 #include "FFmpegTool.hpp"
 
-using namespace std;
+using namespace::std;
 
 YUVCore::YUVCore()
 {
-    std::cout << "YUVCore() width : " << this->_currentItem.width
-    << " height : " << this->_currentItem.height
-    << std::endl;
+    cout << "YUVCore() width : " << this->_currentItem
+    << " height : " << this->_currentItem
+    << endl;
 }
 
 YUVCore::~YUVCore()
 {
-    std::cout << "~YUVCore()" << std::endl;
+    cout << "~YUVCore()" << endl;
 }
 
 bool YUVCore::isPlaying()
@@ -66,7 +66,7 @@ void YUVCore::setPlayState(State s)
         return;
     }
     if (s == Stopped || s == Finished) {
-//        fseek(_file, 0, SEEK_SET);
+        _file->seekg(0, _file->beg);
     }
     _currentState = s;
 }
@@ -75,19 +75,24 @@ YUVCore::State YUVCore::getState() {
     return _currentState;
 }
 
-void YUVCore::setYUVItem(YUVItem &item)
+void YUVCore::setYUVItem(YUVItem *item)
 {
     _currentItem = item;
     //关闭上个文件
     closeFile();
-    std::cout << "打开对应文件" << std::endl;
 //    _file = fopen(_currentItem.fileName, "r");
     
-    _file = new ifstream(_currentItem.fileName, ios::in | ios::binary);
-    
+    _file = new ifstream(_currentItem->fileName, ios::in | ios::binary);
+    if (!_file) return;
 //    std::ifstream std::ifstream(_currentItem.fileName, std::ios::in | std::ios::binary);
-    _imgSize = av_image_get_buffer_size(_currentItem.pixelFormat, _currentItem.width, _currentItem.height, 1);
+    _imgSize = av_image_get_buffer_size(_currentItem->pixelFormat, _currentItem->width, _currentItem->height, 1);
     
+    cout << "文件路径:" << _currentItem->fileName
+    << " 是否打开=" <<_file->is_open()
+    << " 每帧图片的大小: " <<  _imgSize
+    << " 像素格式=" << av_get_pix_fmt_name( _currentItem->pixelFormat)
+    << " 宽:高 = " <<  _currentItem->width << ":" << _currentItem->height
+    << endl;
 }
 
 void YUVCore::closeFile()
@@ -101,41 +106,61 @@ void YUVCore::closeFile()
     _file = nullptr;
 }
 
-void YUVCore::getImageDataFromOneFrame(char *imgData, int *error)
+char * YUVCore::getImageDataFromOneFrame(int *error)
 {
     if (!_file->is_open()) {
-        return;
+        return nullptr;
     }
+    //tellg() 读取输入流中文件指针的位置，返回值可转化为 int。
     // 图片大小
     char data[_imgSize];
-    if (!_file->eof() && _file->read(data, sizeof(data))) {
+    size_t realSize = 0;
+    if ((realSize = _file->read(data, _imgSize).gcount()) == _imgSize) {
         RawVideoFrame in = {
             data,
-            _currentItem.width, _currentItem.height,
-            _currentItem.pixelFormat
+            _currentItem->width, _currentItem->height,
+            _currentItem->pixelFormat
         };
         RawVideoFrame out = {
             nullptr,
-            _currentItem.width >> 4 << 4,
-            _currentItem.height >> 4 << 4,
+            _currentItem->width >> 4 << 4,
+            _currentItem->height >> 4 << 4,
             AV_PIX_FMT_RGB24
         };
         FFmpegTool::convertRawVideo(in, out);
         
-        imgData = out.pixels;
-//        freeCurrentImage();
-//        _currentImage = new QImage((uchar *) out.pixels,
-//                                   out.width, out.height, QImage::Format_RGB888);
         *error = 0;
-        // 刷新
-//        update();
+        return out.pixels;
     } else { // 文件数据已经读取完毕
+        cout << "读取的大小: " << realSize << " 一帧的大小: " << _imgSize << endl;
         // 停止定时器
-//        stopTimer();
         *error = 1;
         // 正常播放完毕
         setPlayState(Finished);
+        return nullptr;
     }
+//    if (_file->read(data, _imgSize).gcount() == _imgSize) {
+//        RawVideoFrame in = {
+//            data,
+//            _currentItem->width, _currentItem->height,
+//            _currentItem->pixelFormat
+//        };
+//        RawVideoFrame out = {
+//            nullptr,
+//            _currentItem->width >> 4 << 4,
+//            _currentItem->height >> 4 << 4,
+//            AV_PIX_FMT_RGB24
+//        };
+//        FFmpegTool::convertRawVideo(in, out);
+//
+//        *imgData = out.pixels;
+//        *error = 0;
+//    } else { // 文件数据已经读取完毕
+//        // 停止定时器
+//        *error = 1;
+//        // 正常播放完毕
+//        setPlayState(Finished);
+//    }
 }
 
 void YUVCore::freeCurrentImage()
