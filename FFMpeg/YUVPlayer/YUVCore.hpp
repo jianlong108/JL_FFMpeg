@@ -15,14 +15,13 @@ extern "C" {
 #include <libavutil/imgutils.h>
 }
 
-
-typedef struct {
-    int width = 640;
-    int height = 480;
+struct YUVItem {
+    int width = 0;
+    int height = 0;
     AVPixelFormat pixelFormat;
     const char *fileName;
     int fps;
-} YUVItem;
+};
 
 class YUVCore {
 
@@ -34,37 +33,40 @@ public:
         Finished
     } State;
     
+    typedef void(*stateChangeCallBack)(State state) ;
+    
     void play();
     void stop();
     void pause();
     bool isPlaying();
 
     void setYUVItem(YUVItem *item);
+    YUVItem * getCurrentYUVItem();
+    bool canPlay();
+    void setStateChangeCallBack(stateChangeCallBack callBackFunc);
     
     State getState();
     
     YUVCore();
     ~YUVCore();
     
-    char* getImageDataFromOneFrame(int *error);
+    char* getOneFrameOfRawDataRGB24(int *error);
     
 private:
-    /// 当前的播放状态
-    State _currentState = Stopped;
+    /// 一帧图片的大小
+    int _imgSize = 0;
     
     /// 当前播放的yuv
     YUVItem *_currentItem = nullptr;
     std::ifstream *_file = nullptr;
     
-    /// 一帧图片的大小
-    int _imgSize = 0;
-    
-    void setPlayState(State s);
-    
     void closeFile();
     
-    void freeCurrentImage();
-//    FILE *_file = nullptr;
+    /// 当前的播放状态
+    State _currentState = Stopped;
+    
+    void setPlayState(State s);
+    stateChangeCallBack m_callBackfunc = nullptr;
 };
 
 #endif /* YUVCore_hpp */

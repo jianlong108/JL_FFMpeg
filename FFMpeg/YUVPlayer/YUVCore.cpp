@@ -69,10 +69,17 @@ void YUVCore::setPlayState(State s)
         _file->seekg(0, _file->beg);
     }
     _currentState = s;
+    //回调上层
+    m_callBackfunc(_currentState);
 }
 
 YUVCore::State YUVCore::getState() {
     return _currentState;
+}
+
+YUVItem* YUVCore::getCurrentYUVItem()
+{
+    return _currentItem;
 }
 
 void YUVCore::setYUVItem(YUVItem *item)
@@ -80,11 +87,9 @@ void YUVCore::setYUVItem(YUVItem *item)
     _currentItem = item;
     //关闭上个文件
     closeFile();
-//    _file = fopen(_currentItem.fileName, "r");
     
     _file = new ifstream(_currentItem->fileName, ios::in | ios::binary);
     if (!_file) return;
-//    std::ifstream std::ifstream(_currentItem.fileName, std::ios::in | std::ios::binary);
     _imgSize = av_image_get_buffer_size(_currentItem->pixelFormat, _currentItem->width, _currentItem->height, 1);
     
     cout << "文件路径:" << _currentItem->fileName
@@ -101,12 +106,11 @@ void YUVCore::closeFile()
         return;
     }
     _file->close();
-//    fclose(_file);
     delete _file;
     _file = nullptr;
 }
 
-char * YUVCore::getImageDataFromOneFrame(int *error)
+char * YUVCore::getOneFrameOfRawDataRGB24(int *error)
 {
     if (!_file->is_open()) {
         return nullptr;
@@ -163,7 +167,12 @@ char * YUVCore::getImageDataFromOneFrame(int *error)
 //    }
 }
 
-void YUVCore::freeCurrentImage()
+void YUVCore::setStateChangeCallBack(stateChangeCallBack callBackFunc)
 {
-    
+    m_callBackfunc = callBackFunc;
+}
+
+bool YUVCore::canPlay()
+{
+    return this->_currentItem;
 }

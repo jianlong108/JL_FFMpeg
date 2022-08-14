@@ -11,11 +11,9 @@
 @interface YUVMacOSPlayer ()
 {
     YUVCore *_core;
-    CVDisplayLinkRef displayLink;
-    YUVItem *item;
+//    CVDisplayLinkRef displayLink;
 }
 
-@property (nonatomic, strong) dispatch_source_t timer;
 @property (nonatomic, assign) CGRect dstRect;
 
 @property (nonatomic, strong) NSImageView *imgView;
@@ -23,6 +21,20 @@
 @end
 
 @implementation YUVMacOSPlayer
+
+static dispatch_source_t g_timer = nil;
+
+static void stateChange(YUVCore::State state)
+{
+    NSLog(@"stateChange: %d",state);
+    
+    if (state == YUVCore::Stopped) {
+        dispatch_source_cancel(g_timer);
+        g_timer = nil;
+    } else if (state == YUVCore::Paused) {
+        dispatch_suspend(g_timer);
+    }
+}
 
 - (instancetype)initWithFrame:(NSRect)frameRect
 {
@@ -35,6 +47,9 @@
 - (void)_initlize
 {
     self->_core = new YUVCore;
+    
+    self->_core->setStateChangeCallBack(stateChange);
+    
     self.wantsLayer = YES;
     self.layer.backgroundColor = [NSColor redColor].CGColor;
     
@@ -54,14 +69,16 @@
 {
     NSLog(@"YUVMacOSPlayer dealloc");
     delete self->_core;
-    CVDisplayLinkRelease(displayLink);
+//    if (displayLink) {
+//        CVDisplayLinkRelease(displayLink);
+//    }
     
 }
 
 
 - (void)setUpYUVItem:(YUVPlayItem *)yuv;
 {
-    item = new YUVItem;
+    YUVItem *item = new YUVItem;
     item->width = yuv.w;
     item->height = yuv.h;
     item->pixelFormat = (AVPixelFormat)yuv.pixelFormat;
@@ -102,22 +119,22 @@ static int i = 0;
 {
     NSLog(@"drawView %d",i++);
     int error = 0;
-    char* buffer = self->_core->getImageDataFromOneFrame(&error);
-    if (error != 0 || !buffer) {
-        dispatch_cancel(self.timer);
-        self.timer = nil;
-        if (buffer) {
-            free(buffer);
-        }
-        return;
-    }
-    int width = item->width;
-    int height = item->height;
+    
+    YUVItem *itme = self->_core->getCurrentYUVItem();
+    if (!itme) return;
+    
+    char* buffer = self->_core->getOneFrameOfRawDataRGB24(&error);
+    if (!buffer) return;
+    
+    int width = itme->width;
+    int height = itme->height;
 
     NSImage *img = [self imageWithRGB24:buffer width:width height:height];
     
     if (!img) return;
+    
     free(buffer);
+    
     [self.imgView setImage:img];
     [self updateLayer];
 }
@@ -243,7 +260,7 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
 
 - (void)play
 {
-    if (!item) {
+    if (!self->_core->canPlay()) {
         return;
     }
     /* core Video 中的 displayLink
@@ -259,18 +276,23 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
 
     CVDisplayLinkStart(displayLink);
      */
-    if (!self.timer) {
+    if (!g_timer) {
         dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
          
         dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
          
-        self.timer = timer;
         // 定时任务调度设置,0秒后启动,每个5秒运行
         dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW ,0);
-        dispatch_source_set_timer(self.timer, time, 1000/30 * NSEC_PER_MSEC, 3 * NSEC_PER_SEC);
+        /*
+         dispatch_source_set_timer(dispatch_source_t source,
+             dispatch_time_t start, //开始时间
+             uint64_t interval, // 间隔时间
+             uint64_t leeway); //可接受误差 纳秒 填0 == 不接受误差
+         */
+        dispatch_source_set_timer(timer, time, (int)1000/30 * NSEC_PER_MSEC, 0 * NSEC_PER_SEC);
         
         __weak typeof(self) weakSelf = self;
-        dispatch_source_set_event_handler(self.timer, ^{
+        dispatch_source_set_event_handler(timer, ^{
             // 定时任务
             @autoreleasepool {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -279,14 +301,15 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
             }
         });
          
-        dispatch_source_set_cancel_handler(self.timer, ^{
+        dispatch_source_set_cancel_handler(timer, ^{
             // 定时取消回调
             NSLog(@"source did cancel...");
         });
+        g_timer = timer;
          
     }
     // 启动定时器
-    dispatch_resume(self.timer);
+    dispatch_resume(g_timer);
 }
 
 @end
