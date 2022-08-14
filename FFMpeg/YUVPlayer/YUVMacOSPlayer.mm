@@ -19,7 +19,6 @@
 @property (nonatomic, assign) CGRect dstRect;
 
 @property (nonatomic, strong) NSImageView *imgView;
-@property (nonatomic, strong) NSImage *imgData;
 
 @end
 
@@ -115,6 +114,16 @@ static int i = 0;
     int width = item->width;
     int height = item->height;
 
+    NSImage *img = [self imageWithRGB24:buffer width:width height:height];
+    
+    if (!img) return;
+    free(buffer);
+    [self.imgView setImage:img];
+    [self updateLayer];
+}
+
+- (NSImage *)imageWithRGB24:(char *)buffer width:(int)width height:(int)height
+{
     //转为RGBA32
     //像素总数
     int pixelCount = width * height;
@@ -137,7 +146,10 @@ static int i = 0;
     if(colorSpaceRef == NULL) {
         NSLog(@"Error allocating color space");
         CGDataProviderRelease(provider);
-        return;
+        if (rgba) {
+            free(rgba);
+        }
+        return nil;
     }
 
     CGBitmapInfo bitmapInfo = kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast;
@@ -162,7 +174,10 @@ static int i = 0;
         CGDataProviderRelease(provider);
         CGColorSpaceRelease(colorSpaceRef);
         CGImageRelease(iref);
-        return;
+        if (rgba) {
+            free(rgba);
+        }
+        return nil;
     }
     CGContextRef context = CGBitmapContextCreate(pixels,
                                                  width,
@@ -171,19 +186,23 @@ static int i = 0;
                                                  bytesPerRow,
                                                  colorSpaceRef,
                                                  bitmapInfo);
-    if(context == NULL) {
-        NSLog(@"Error context not created");
-        free(pixels);
-    }
+
+    NSImage *image = nil;
     if(context) {
         CGContextDrawImage(context, CGRectMake(0.0f, 0.0f, width, height), iref);
         CGImageRef imageRef = CGBitmapContextCreateImage(context);
-//        if (_imgData) {
-//            free(_imgData.TIFFRepresentation.bytes);
-//        }
-        _imgData = [[NSImage alloc] initWithCGImage:imageRef size:CGSizeMake(width, height)];
+        image = [[NSImage alloc] initWithCGImage:imageRef size:CGSizeMake(width, height)];
         CGImageRelease(imageRef);
         CGContextRelease(context);
+    } else {
+        NSLog(@"Error context not created");
+        if(pixels) {
+            free(pixels);
+        }
+        if (rgba) {
+            free(rgba);
+        }
+        return nil;
     }
 
     CGColorSpaceRelease(colorSpaceRef);
@@ -193,54 +212,53 @@ static int i = 0;
     if(pixels) {
         free(pixels);
     }
-    if (buffer) {
-        free(buffer);
-        buffer = nil;
+    if (rgba) {
+        free(rgba);
     }
-    
-    if (!_imgData) return;
-    [self.imgView setImage:_imgData];
-    [self updateLayer];
+    return image;
 }
 
+/*
+- (CVReturn)getFrameForTime:(const CVTimeStamp*)outputTime
+{
+    @autoreleasepool {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self drawView];
+        });
+    }
+    return kCVReturnSuccess;
+}
 
-//- (CVReturn)getFrameForTime:(const CVTimeStamp*)outputTime
-//{
-//    @autoreleasepool {
-//        dispatch_sync(dispatch_get_main_queue(), ^{
-//            [self drawView];
-//        });
-//    }
-//    return kCVReturnSuccess;
-//}
-
-//static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
-//                                      const CVTimeStamp* now,
-//                                      const CVTimeStamp* outputTime,
-//                                      CVOptionFlags flagsIn,
-//                                      CVOptionFlags* flagsOut,
-//                                      void* displayLinkContext)
-//{
-//    CVReturn result = [(__bridge YUVMacOSPlayer *)displayLinkContext getFrameForTime:outputTime];
-//    return result;
-//}
+static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
+                                      const CVTimeStamp* now,
+                                      const CVTimeStamp* outputTime,
+                                      CVOptionFlags flagsIn,
+                                      CVOptionFlags* flagsOut,
+                                      void* displayLinkContext)
+{
+    CVReturn result = [(__bridge YUVMacOSPlayer *)displayLinkContext getFrameForTime:outputTime];
+    return result;
+}
+*/
 
 - (void)play
 {
     if (!item) {
         return;
     }
-//    CGDirectDisplayID   displayID = CGMainDisplayID();
-//    CVReturn            error = kCVReturnSuccess;
-//    error = CVDisplayLinkCreateWithCGDisplay(displayID, &displayLink);
-//    if (error)
-//    {
-//        NSLog(@"DisplayLink created with error:%d", error);
-//        displayLink = NULL;
-//    }
-//    CVDisplayLinkSetOutputCallback(displayLink, MyDisplayLinkCallback, (__bridge void *)self);
-//
-//    CVDisplayLinkStart(displayLink);
+    /* core Video 中的 displayLink
+    CGDirectDisplayID   displayID = CGMainDisplayID();
+    CVReturn            error = kCVReturnSuccess;
+    error = CVDisplayLinkCreateWithCGDisplay(displayID, &displayLink);
+    if (error)
+    {
+        NSLog(@"DisplayLink created with error:%d", error);
+        displayLink = NULL;
+    }
+    CVDisplayLinkSetOutputCallback(displayLink, MyDisplayLinkCallback, (__bridge void *)self);
+
+    CVDisplayLinkStart(displayLink);
+     */
     if (!self.timer) {
         dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
          
@@ -266,9 +284,9 @@ static int i = 0;
             NSLog(@"source did cancel...");
         });
          
-        // 启动定时器
-        dispatch_resume(timer);
     }
+    // 启动定时器
+    dispatch_resume(self.timer);
 }
 
 @end
