@@ -110,7 +110,7 @@ void YUVCore::closeFile()
     _file = nullptr;
 }
 
-char * YUVCore::getOneFrameOfRawDataRGB24(int *error)
+char * YUVCore::getOneFrameRawDataOfRGB24(int *error)
 {
     if (!_file->is_open()) {
         return nullptr;
@@ -136,7 +136,7 @@ char * YUVCore::getOneFrameOfRawDataRGB24(int *error)
         *error = 0;
         return out.pixels;
     } else { // 文件数据已经读取完毕
-        cout << "读取的大小: " << realSize << " 一帧的大小: " << _imgSize << endl;
+        cout << "读取的大小: " << realSize << " 需要一帧的大小: " << _imgSize << endl;
         // 停止定时器
         *error = 1;
         // 正常播放完毕

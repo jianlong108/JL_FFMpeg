@@ -50,7 +50,7 @@ public:
     YUVCore();
     ~YUVCore();
     
-    char* getOneFrameOfRawDataRGB24(int *error);
+    char* getOneFrameRawDataOfRGB24(int *error);
     
 private:
     /// 一帧图片的大小

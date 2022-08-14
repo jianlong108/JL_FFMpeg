@@ -123,7 +123,7 @@ static int i = 0;
     YUVItem *itme = self->_core->getCurrentYUVItem();
     if (!itme) return;
     
-    char* buffer = self->_core->getOneFrameOfRawDataRGB24(&error);
+    char* buffer = self->_core->getOneFrameRawDataOfRGB24(&error);
     if (!buffer) return;
     
     int width = itme->width;
