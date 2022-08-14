@@ -13,8 +13,9 @@ using namespace::std;
 
 YUVCore::YUVCore()
 {
-    cout << "YUVCore() width : " << this->_currentItem
-    << " height : " << this->_currentItem
+    cout << "YUVCore() width : " << this->_currentItem.width
+    << " height : " << this->_currentItem.height
+    << " pixelFormat : " << av_get_pix_fmt_name(this->_currentItem.pixelFormat)
     << endl;
 }
 
@@ -77,26 +78,26 @@ YUVCore::State YUVCore::getState() {
     return _currentState;
 }
 
-YUVItem* YUVCore::getCurrentYUVItem()
+YUVItem& YUVCore::getCurrentYUVItem()
 {
     return _currentItem;
 }
 
-void YUVCore::setYUVItem(YUVItem *item)
+void YUVCore::setYUVItem(YUVItem &item)
 {
     _currentItem = item;
     //关闭上个文件
     closeFile();
     
-    _file = new ifstream(_currentItem->fileName, ios::in | ios::binary);
+    _file = new ifstream(_currentItem.fileName, ios::in | ios::binary);
     if (!_file) return;
-    _imgSize = av_image_get_buffer_size(_currentItem->pixelFormat, _currentItem->width, _currentItem->height, 1);
+    _imgSize = av_image_get_buffer_size(_currentItem.pixelFormat, _currentItem.width, _currentItem.height, 1);
     
-    cout << "文件路径:" << _currentItem->fileName
+    cout << "文件路径:" << _currentItem.fileName
     << " 是否打开=" <<_file->is_open()
     << " 每帧图片的大小: " <<  _imgSize
-    << " 像素格式=" << av_get_pix_fmt_name( _currentItem->pixelFormat)
-    << " 宽:高 = " <<  _currentItem->width << ":" << _currentItem->height
+    << " 像素格式=" << av_get_pix_fmt_name( _currentItem.pixelFormat)
+    << " 宽:高 = " <<  _currentItem.width << ":" << _currentItem.height
     << endl;
 }
 
@@ -122,13 +123,13 @@ char * YUVCore::getOneFrameRawDataOfRGB24(int *error)
     if ((realSize = _file->read(data, _imgSize).gcount()) == _imgSize) {
         RawVideoFrame in = {
             data,
-            _currentItem->width, _currentItem->height,
-            _currentItem->pixelFormat
+            _currentItem.width, _currentItem.height,
+            _currentItem.pixelFormat
         };
         RawVideoFrame out = {
             nullptr,
-            _currentItem->width >> 4 << 4,
-            _currentItem->height >> 4 << 4,
+            _currentItem.width >> 4 << 4,
+            _currentItem.height >> 4 << 4,
             AV_PIX_FMT_RGB24
         };
         FFmpegTool::convertRawVideo(in, out);
@@ -174,5 +175,5 @@ void YUVCore::setStateChangeCallBack(stateChangeCallBack callBackFunc)
 
 bool YUVCore::canPlay()
 {
-    return this->_currentItem;
+    return this->_currentItem.vaild();
 }

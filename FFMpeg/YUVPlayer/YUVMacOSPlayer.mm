@@ -78,14 +78,14 @@ static void stateChange(YUVCore::State state)
 
 - (void)setUpYUVItem:(YUVPlayItem *)yuv;
 {
-    YUVItem *item = new YUVItem;
-    item->width = yuv.w;
-    item->height = yuv.h;
-    item->pixelFormat = (AVPixelFormat)yuv.pixelFormat;
-    item->fps = yuv.fps;
-    item->fileName = [yuv.fileName cStringUsingEncoding:NSUTF8StringEncoding];
-    
+    YUVItem item;
+    item.width = yuv.w;
+    item.height = yuv.h;
+    item.pixelFormat = (AVPixelFormat)yuv.pixelFormat;
+    item.fps = yuv.fps;
+    item.fileName = [yuv.fileName cStringUsingEncoding:NSUTF8StringEncoding];
     self->_core->setYUVItem(item);
+    
     int w = CGRectGetWidth(self.frame);
     int h = CGRectGetHeight(self.frame);
     
@@ -117,17 +117,20 @@ static void stateChange(YUVCore::State state)
 static int i = 0;
 - (void)drawView
 {
-    NSLog(@"drawView %d",i++);
+    if (i % 30 == 0) {
+        NSLog(@"drawView");
+    }
+    i++;
     int error = 0;
     
-    YUVItem *itme = self->_core->getCurrentYUVItem();
-    if (!itme) return;
+    YUVItem &itme = self->_core->getCurrentYUVItem();
+    if (!itme.vaild()) return;
     
     char* buffer = self->_core->getOneFrameRawDataOfRGB24(&error);
     if (!buffer) return;
     
-    int width = itme->width;
-    int height = itme->height;
+    int width = itme.width;
+    int height = itme.height;
 
     NSImage *img = [self imageWithRGB24:buffer width:width height:height];
     

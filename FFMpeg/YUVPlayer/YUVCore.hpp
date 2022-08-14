@@ -21,6 +21,19 @@ struct YUVItem {
     AVPixelFormat pixelFormat;
     const char *fileName;
     int fps;
+    
+    bool vaild() {
+        return this->width > 0 && this->height > 0 && this->pixelFormat == AV_PIX_FMT_YUV420P;
+    }
+    
+    YUVItem() {
+        this->pixelFormat = AV_PIX_FMT_YUV420P;
+        std::cout << "YUVItem()" << std::endl;
+    };
+    
+    ~YUVItem() {
+        std::cout << "~YUVItem()" << std::endl;
+    };
 };
 
 class YUVCore {
@@ -40,8 +53,8 @@ public:
     void pause();
     bool isPlaying();
 
-    void setYUVItem(YUVItem *item);
-    YUVItem * getCurrentYUVItem();
+    void setYUVItem(YUVItem &item);
+    YUVItem& getCurrentYUVItem();
     bool canPlay();
     void setStateChangeCallBack(stateChangeCallBack callBackFunc);
     
@@ -57,7 +70,7 @@ private:
     int _imgSize = 0;
     
     /// 当前播放的yuv
-    YUVItem *_currentItem = nullptr;
+    YUVItem _currentItem;
     std::ifstream *_file = nullptr;
     
     void closeFile();
