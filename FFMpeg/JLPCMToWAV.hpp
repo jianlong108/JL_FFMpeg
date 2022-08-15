@@ -15,7 +15,8 @@
 #define AUDIO_FORMAT_FLOAT 3
 
 // WAV文件头（44字节）
-typedef struct {
+typedef struct WAVHeader
+{
     // RIFF chunk的id
     uint8_t riffChunkId[4] = {'R', 'I', 'F', 'F'};
     // RIFF chunk的data大小，即文件总长度减去8字节

@@ -12,8 +12,6 @@
 		68A9179A289FAE2B00E16BBA /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 68A91798289FAE2B00E16BBA /* Shader.vsh */; };
 		68A9179D289FAE3E00E16BBA /* YUVView.m in Sources */ = {isa = PBXBuildFile; fileRef = 68A9179C289FAE3D00E16BBA /* YUVView.m */; };
 		68A9179F289FB87300E16BBA /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68A9179E289FB87300E16BBA /* GLUT.framework */; };
-		68A917A3289FB91B00E16BBA /* 2.yuv in Resources */ = {isa = PBXBuildFile; fileRef = 68A917A2289FB91B00E16BBA /* 2.yuv */; };
-		68A917A5289FBB4400E16BBA /* file.yuv in Resources */ = {isa = PBXBuildFile; fileRef = 68A917A4289FBB4400E16BBA /* file.yuv */; };
 		68A917A828A0BEA900E16BBA /* YUVMacOSPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 68A917A728A0BEA900E16BBA /* YUVMacOSPlayer.mm */; };
 		68A917E028A4B19900E16BBA /* YUVPlayItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 68A917DE28A4B19900E16BBA /* YUVPlayItem.m */; };
 		68A917E328A4B55E00E16BBA /* YUVCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68A917E128A4B55E00E16BBA /* YUVCore.cpp */; };
@@ -43,8 +41,6 @@
 		68A9179B289FAE3D00E16BBA /* YUVView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YUVView.h; sourceTree = "<group>"; };
 		68A9179C289FAE3D00E16BBA /* YUVView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YUVView.m; sourceTree = "<group>"; };
 		68A9179E289FB87300E16BBA /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
-		68A917A2289FB91B00E16BBA /* 2.yuv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = 2.yuv; sourceTree = "<group>"; };
-		68A917A4289FBB4400E16BBA /* file.yuv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = file.yuv; sourceTree = "<group>"; };
 		68A917A628A0BEA900E16BBA /* YUVMacOSPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YUVMacOSPlayer.h; sourceTree = "<group>"; };
 		68A917A728A0BEA900E16BBA /* YUVMacOSPlayer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = YUVMacOSPlayer.mm; sourceTree = "<group>"; };
 		68A917DE28A4B19900E16BBA /* YUVPlayItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YUVPlayItem.m; sourceTree = "<group>"; };
@@ -115,8 +111,6 @@
 		68A91796289FAE1800E16BBA /* YUVPlayer */ = {
 			isa = PBXGroup;
 			children = (
-				68A917A4289FBB4400E16BBA /* file.yuv */,
-				68A917A2289FB91B00E16BBA /* 2.yuv */,
 				68A9179B289FAE3D00E16BBA /* YUVView.h */,
 				68A9179C289FAE3D00E16BBA /* YUVView.m */,
 				68A91797289FAE2B00E16BBA /* Shader.fsh */,
@@ -253,10 +247,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				68A917A5289FBB4400E16BBA /* file.yuv in Resources */,
 				68A9179A289FAE2B00E16BBA /* Shader.vsh in Resources */,
 				68A91799289FAE2B00E16BBA /* Shader.fsh in Resources */,
-				68A917A3289FB91B00E16BBA /* 2.yuv in Resources */,
 				F4B9F56C276F0D2600F631A4 /* Assets.xcassets in Resources */,
 				F4B9F56F276F0D2600F631A4 /* Main.storyboard in Resources */,
 			);

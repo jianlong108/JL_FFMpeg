@@ -11,6 +11,9 @@
 #include <stdio.h>
 #include <iostream>
 
+//#include <dispatch/dispatch.h>
+//#include <dispatch/source.h>
+
 extern "C" {
 #include <libavutil/imgutils.h>
 }
@@ -46,7 +49,8 @@ public:
         Finished
     } State;
     
-    typedef void(*stateChangeCallBack)(State state) ;
+    typedef void(*stateChangeCallBack)(State state);
+    typedef void(*pushOneFrameRawDataFunc)(char *, int, int);
     
     void play();
     void stop();
@@ -57,6 +61,7 @@ public:
     YUVItem& getCurrentYUVItem();
     bool canPlay();
     void setStateChangeCallBack(stateChangeCallBack callBackFunc);
+    void setPushOneFrameRawDataCallBack(pushOneFrameRawDataFunc callBackFunc);
     
     State getState();
     
@@ -74,12 +79,13 @@ private:
     std::ifstream *_file = nullptr;
     
     void closeFile();
-    
+//    dispatch_source_t m_timer;
     /// 当前的播放状态
     State _currentState = Stopped;
     
     void setPlayState(State s);
     stateChangeCallBack m_callBackfunc = nullptr;
+    pushOneFrameRawDataFunc m_frameDataFunc = nullptr;
 };
 
 #endif /* YUVCore_hpp */

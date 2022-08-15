@@ -49,6 +49,7 @@ static void stateChange(YUVCore::State state)
     self->_core = new YUVCore;
     
     self->_core->setStateChangeCallBack(stateChange);
+//    self->_core->setStateChangeCallBack(stateChange);
     
     self.wantsLayer = YES;
     self.layer.backgroundColor = [NSColor redColor].CGColor;
@@ -261,9 +262,17 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
 }
 */
 
+- (void)pause
+{
+    if (g_timer) {
+        dispatch_suspend(g_timer);
+    }
+}
+
 - (void)play
 {
     if (!self->_core->canPlay()) {
+//        self->_core->play();
         return;
     }
     /* core Video 中的 displayLink
@@ -286,12 +295,12 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
          
         // 定时任务调度设置,0秒后启动,每个5秒运行
         dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW ,0);
-        /*
-         dispatch_source_set_timer(dispatch_source_t source,
-             dispatch_time_t start, //开始时间
-             uint64_t interval, // 间隔时间
-             uint64_t leeway); //可接受误差 纳秒 填0 == 不接受误差
-         */
+        ///
+        ///dispatch_source_set_timer(dispatch_source_t source,
+        ///     dispatch_time_t start, //开始时间
+        ///     uint64_t interval, // 间隔时间
+        ///    uint64_t leeway); //可接受误差 纳秒 填0 == 不接受误差
+
         dispatch_source_set_timer(timer, time, (int)1000/30 * NSEC_PER_MSEC, 0 * NSEC_PER_SEC);
         
         __weak typeof(self) weakSelf = self;

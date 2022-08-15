@@ -22,6 +22,10 @@
 //#include <iostream>
 //#include <fstream>
 
+#define margin 30
+#define btnH 30
+#define btnW 144
+
 @interface ViewController ()
 <
 NSTabViewDelegate
@@ -58,14 +62,14 @@ NSTabViewDelegate
 //#define yuv_width 310
 //#define yuv_height 522
 
-#define filename @"file"
-#define yuv_width 176
-#define yuv_height 144
+//#define filename @"file"
+//#define yuv_width 176
+//#define yuv_height 144
 
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    _osPlayer = [[YUVMacOSPlayer alloc] initWithFrame:CGRectMake(20,360,640,480)];
+    _osPlayer = [[YUVMacOSPlayer alloc] initWithFrame:CGRectMake(20,7*margin,640,480)];
     
     YUVPlayItem *yuv = [[YUVPlayItem alloc] init];
 //    yuv.w = 640;
@@ -75,17 +79,17 @@ NSTabViewDelegate
 //    yuv.fileName = @"/Users/jl/Downloads/AVA/11-YUV420P.yuv";
     
     
-    yuv.w = 640;
-    yuv.h = 1080;
-    yuv.fps = 30;
-    yuv.pixelFormat = YUVPlayItemPixFormateYUV420P;
-    yuv.fileName = @"/Users/jl/Downloads/AVA/050.yuv";
-    
-//    yuv.w = 960;
-//    yuv.h = 720;
+//    yuv.w = 640;
+//    yuv.h = 1080;
 //    yuv.fps = 30;
 //    yuv.pixelFormat = YUVPlayItemPixFormateYUV420P;
-//    yuv.fileName = @"/Users/jl/Downloads/AVA/xq.yuv";
+//    yuv.fileName = @"/Users/jl/Downloads/AVA/050.yuv";
+    
+    yuv.w = 960;
+    yuv.h = 720;
+    yuv.fps = 30;
+    yuv.pixelFormat = YUVPlayItemPixFormateYUV420P;
+    yuv.fileName = @"/Users/jl/Downloads/AVA/xq.yuv";
     
 
     [_osPlayer setUpYUVItem:yuv];
@@ -93,71 +97,75 @@ NSTabViewDelegate
     [self.view addSubview:_osPlayer];
 
 
-    NSButton *beiginPlayYUVBtn = [NSButton buttonWithTitle:@"开始播放yuv" target:self action:@selector(play)];
-    beiginPlayYUVBtn.frame = CGRectMake(350, 300, 188, 44);
+    NSButton *beiginPlayYUVBtn = [NSButton buttonWithTitle:@"开始播放yuv" target:self action:@selector(play:)];
+    beiginPlayYUVBtn.frame = CGRectMake(0, 6*margin, btnW, btnH);
     [self.view addSubview:beiginPlayYUVBtn];
+    
+    NSButton *stopPlayYUVBtn = [NSButton buttonWithTitle:@"停止播放yuv" target:self action:@selector(stop)];
+    stopPlayYUVBtn.frame = CGRectMake(btnW+margin, 6*margin, btnW, btnH);
+    [self.view addSubview:stopPlayYUVBtn];
 
     NSButton *beiginRecordBtn = [NSButton buttonWithTitle:@"开始录音pcm" target:self action:@selector(beginRecord:)];
-    beiginRecordBtn.frame = CGRectMake(0, 0, 188, 44);
+    beiginRecordBtn.frame = CGRectMake(0, 0, btnW, btnH);
     [self.view addSubview:beiginRecordBtn];
 
 
     NSButton *endRecordBtn = [NSButton buttonWithTitle:@"停止录音pcm" target:self action:@selector(endRecord:)];
-    endRecordBtn.frame = CGRectMake(200, 0, 188, 44);
+    endRecordBtn.frame = CGRectMake(200, 0, btnW, btnH);
     [self.view addSubview:endRecordBtn];
 
     NSButton *beiginPlayBtn = [NSButton buttonWithTitle:@"开始播放pcm" target:self action:@selector(beginPlay:)];
-    beiginPlayBtn.frame = CGRectMake(0, 50, 188, 44);
+    beiginPlayBtn.frame = CGRectMake(0, margin, btnW, btnH);
     [self.view addSubview:beiginPlayBtn];
 
 
     NSButton *endPlayBtn = [NSButton buttonWithTitle:@"停止播放pcm" target:self action:@selector(endPlay:)];
-    endPlayBtn.frame = CGRectMake(200, 50, 188, 44);
+    endPlayBtn.frame = CGRectMake(200, margin, btnW, btnH);
     [self.view addSubview:endPlayBtn];
 
 
     NSButton *beiginPlayWAVBtn = [NSButton buttonWithTitle:@"开始播放wav" target:self action:@selector(beginPlayWAV:)];
-    beiginPlayWAVBtn.frame = CGRectMake(0, 150, 188, 44);
+    beiginPlayWAVBtn.frame = CGRectMake(0, 3*margin, btnW, btnH);
     [self.view addSubview:beiginPlayWAVBtn];
 
 
     NSButton *endPlayWAVBtn = [NSButton buttonWithTitle:@"停止播放wav" target:self action:@selector(endPlayWAV:)];
-    endPlayWAVBtn.frame = CGRectMake(200, 150, 188, 44);
+    endPlayWAVBtn.frame = CGRectMake(200, 3*margin, btnW, btnH);
     [self.view addSubview:endPlayWAVBtn];
 
 
     _beiginRecordSwitch = [[NSSwitch alloc] init];
-    _beiginRecordSwitch.frame = CGRectMake(400, 0, 44, 44);
+    _beiginRecordSwitch.frame = CGRectMake(400, 0, 44, btnH);
     [self.view addSubview:_beiginRecordSwitch];
 
 
     _beiginRecordSwitch.state = NSControlStateValueOn;
 
     NSButton *pcmToWAVBtn = [NSButton buttonWithTitle:@"开始转换pcm2wav" target:self action:@selector(beginConvert:)];
-    pcmToWAVBtn.frame = CGRectMake(0, 100, 188, 44);
+    pcmToWAVBtn.frame = CGRectMake(0, 2*margin, btnW, btnH);
     [self.view addSubview:pcmToWAVBtn];
 
 
     NSButton *audioResampleBtn = [NSButton buttonWithTitle:@"音频重采样" target:self action:@selector(audioResample:)];
-    audioResampleBtn.frame = CGRectMake(200, 100, 188, 44);
+    audioResampleBtn.frame = CGRectMake(200, 2*margin, btnW, btnH);
     [self.view addSubview:audioResampleBtn];
 
 
     NSButton *aacEncodeBtn = [NSButton buttonWithTitle:@"aac编码" target:self action:@selector(aacEncode:)];
-    aacEncodeBtn.frame = CGRectMake(0, 200, 188, 44);
+    aacEncodeBtn.frame = CGRectMake(0, 4*margin, btnW, btnH);
     [self.view addSubview:aacEncodeBtn];
 
     NSButton *aacDecodeBtn = [NSButton buttonWithTitle:@"aac解码" target:self action:@selector(aacDecode:)];
-    aacDecodeBtn.frame = CGRectMake(200, 200, 188, 44);
+    aacDecodeBtn.frame = CGRectMake(200, 4*margin, btnW, btnH);
     [self.view addSubview:aacDecodeBtn];
 
     NSButton *beiginRecordYUVBtn = [NSButton buttonWithTitle:@"开始录制yuv" target:self action:@selector(beginRecordYUV:)];
-    beiginRecordYUVBtn.frame = CGRectMake(0, 250, 188, 44);
+    beiginRecordYUVBtn.frame = CGRectMake(0, 5*margin, btnW, btnH);
     [self.view addSubview:beiginRecordYUVBtn];
 
 
     NSButton *endRecordYUVBtn = [NSButton buttonWithTitle:@"停止录制yuv" target:self action:@selector(endRecordYUV:)];
-    endRecordYUVBtn.frame = CGRectMake(200, 250, 188, 44);
+    endRecordYUVBtn.frame = CGRectMake(200, 5*margin, btnW, btnH);
     [self.view addSubview:endRecordYUVBtn];
 }
 
@@ -302,9 +310,14 @@ NSTabViewDelegate
 
 #pragma mark - action
 
-- (void)play
+- (void)play:(NSButton *)sender
 {
     [_osPlayer play];
+}
+
+- (void)stop
+{
+    [_osPlayer pause];
 }
 
 - (void)draw {
@@ -317,7 +330,6 @@ NSTabViewDelegate
     
 //    NSLog(@"%@",[NSData dataWithBytes:buf length:yuv_length]);
     
-    
 //    _playView.drawBlock = ^{
 //        size_t yuv_length = yuv_width*yuv_height*3/2;
 //        Byte buf[yuv_length];
@@ -329,17 +341,18 @@ NSTabViewDelegate
 //        [self.playView displayYUV_I420:(char*)buf width:yuv_width height:yuv_height];
 //
 //    };
-    size_t yuv_length = yuv_width*yuv_height*3/2;
-    Byte buf[yuv_length];
-    fread(buf, 1, yuv_length, file);
-    if (feof(file) > 0) {
-        self.playView.stop = YES;
-        fseek(file, 0, SEEK_SET);
-    }
-    [self.playView displayYUV_I420:(char*)buf width:yuv_width height:yuv_height];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self draw];
-    });
+    
+//    size_t yuv_length = yuv_width*yuv_height*3/2;
+//    Byte buf[yuv_length];
+//    fread(buf, 1, yuv_length, file);
+//    if (feof(file) > 0) {
+//        self.playView.stop = YES;
+//        fseek(file, 0, SEEK_SET);
+//    }
+//    [self.playView displayYUV_I420:(char*)buf width:yuv_width height:yuv_height];
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        [self draw];
+//    });
 }
 
 

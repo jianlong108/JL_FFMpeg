@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)setUpYUVItem:(YUVPlayItem *)yuv;
 - (void)play;
+- (void)pause;
 
 @end
 

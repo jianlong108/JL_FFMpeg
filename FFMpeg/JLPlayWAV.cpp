@@ -35,7 +35,8 @@ using namespace::std;
 
 
 // 用于存储读取的音频数据和长度
-typedef struct {
+typedef struct AudioBuffer
+{
     int len = 0;
     int pullLen = 0;
     Uint8 *data = nullptr;

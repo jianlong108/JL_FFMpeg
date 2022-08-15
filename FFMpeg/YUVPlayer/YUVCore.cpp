@@ -11,6 +11,15 @@
 
 using namespace::std;
 
+static void timerEvent(void *context) {
+    
+}
+static void cancelTimerEvent(void *context) {
+    
+}
+
+
+
 YUVCore::YUVCore()
 {
     cout << "YUVCore() width : " << this->_currentItem.width
@@ -35,8 +44,8 @@ void YUVCore::play()
         return;
     }
     
-    //绘制一帧
-    
+    // 启动定时器
+    // dispatch_resume(m_timer);
     setPlayState(Playing);
 }
 
@@ -99,6 +108,37 @@ void YUVCore::setYUVItem(YUVItem &item)
     << " 像素格式=" << av_get_pix_fmt_name( _currentItem.pixelFormat)
     << " 宽:高 = " <<  _currentItem.width << ":" << _currentItem.height
     << endl;
+    /*
+    if (!m_timer) {
+        m_timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
+         
+        // 定时任务调度设置,0秒后启动,每个5秒运行
+        dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW ,0);
+        
+         //dispatch_source_set_timer(dispatch_source_t source,
+         //    dispatch_time_t start, //开始时间
+         //    uint64_t interval, // 间隔时间
+         //    uint64_t leeway); //可接受误差 纳秒 填0 == 不接受误差
+        
+        dispatch_source_set_timer(m_timer, time, (int)1000/_currentItem.fps * NSEC_PER_MSEC, 0 * NSEC_PER_SEC);
+        
+//        __weak typeof(self) weakSelf = self;
+//        dispatch_source_set_event_handler(timer, ^{
+            // 定时任务
+//            @autoreleasepool {
+//                dispatch_async(dispatch_get_main_queue(), ^{
+//                    [weakSelf drawView];
+//                });
+//            }
+//        });
+        dispatch_source_set_event_handler_f(m_timer, timerEvent);
+        
+        dispatch_source_set_cancel_handler_f(m_timer, cancelTimerEvent);
+        
+//        m_timer = timer;
+         
+    }
+*/
 }
 
 void YUVCore::closeFile()
@@ -171,6 +211,11 @@ char * YUVCore::getOneFrameRawDataOfRGB24(int *error)
 void YUVCore::setStateChangeCallBack(stateChangeCallBack callBackFunc)
 {
     m_callBackfunc = callBackFunc;
+}
+
+void YUVCore::setPushOneFrameRawDataCallBack(pushOneFrameRawDataFunc callBackFunc)
+{
+    m_frameDataFunc = callBackFunc;
 }
 
 bool YUVCore::canPlay()
